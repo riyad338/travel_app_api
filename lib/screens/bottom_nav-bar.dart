@@ -36,18 +36,18 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
               ),
               label: "Explore"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.tag,
+              icon: Image.asset(
+                "images/foryou.png",
               ),
               label: "For You"),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.newspaper,
+              icon: Image.asset(
+                "images/world.png",
               ),
               label: "World"),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_outline,
+            icon: Image.asset(
+              "images/account.png",
             ),
             label: "Account",
           ),
