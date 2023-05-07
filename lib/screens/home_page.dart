@@ -36,11 +36,6 @@ class _HomePageState extends State<HomePage> {
   late LatestCampaignProvider latestCampaignProvider;
   late HomePageProvider homePageProvider;
   ScrollController _scrollController = ScrollController();
-  _scrollToBottom() {
-    // _scrollController.animateTo(_scrollController.position.minScrollExtent,
-    //     duration:  Duration(seconds: 1), curve: Curves.fastOutSlowIn);
-    _scrollController.jumpTo(_scrollController.position.minScrollExtent);
-  }
 
   @override
   void didChangeDependencies() {
@@ -107,12 +102,18 @@ class _HomePageState extends State<HomePage> {
                                       Column(
                                         children: [
                                           Text(
-                                              "${homePageProvider.userModel!.userInfo!.name}"),
+                                            "${homePageProvider.userModel!.userInfo!.name}",
+                                            style: mytextstyle(
+                                                Color(0xff131B1A),
+                                                18,
+                                                FontWeight.w500),
+                                          ),
                                           Row(
                                             children: [
                                               Icon(
                                                 Icons.location_on,
                                                 size: 14.sp,
+                                                color: Color(0xff9C9C9C),
                                               ),
                                               Text(
                                                 "${homePageProvider.userModel!.userInfo!.address}",
@@ -136,7 +137,10 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15.r),
                           ),
-                          child: Icon(Icons.document_scanner_outlined),
+                          child: Image.asset(
+                            "images/scan.png",
+                            color: Colors.grey,
+                          ),
                         ),
                         SizedBox(
                           width: 10.w,
@@ -150,7 +154,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15.r),
                               ),
-                              child: Icon(Icons.notifications_outlined),
+                              child: Icon(Icons.notifications_outlined,
+                                  color: Color(0xff9C9C9C)),
                             ),
                             Positioned(
                                 top: 10.h,
@@ -162,6 +167,9 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ],
+                    ),
+                    SizedBox(
+                      height: 8.h,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -180,8 +188,15 @@ class _HomePageState extends State<HomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("Where do you wanna go?"),
-                                Icon(Icons.arrow_forward)
+                                Text(
+                                  "Where do you wanna go?",
+                                  style: mytextstyle(
+                                      Color(0xff9C9C9C), 16, FontWeight.w400),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.greenAccent,
+                                )
                               ],
                             ),
                           ),
@@ -225,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(
-                      height: 30.h,
+                      height: 10.h,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,6 +252,9 @@ class _HomePageState extends State<HomePage> {
                               height: 65.h,
                               width: 80.w,
                             ),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Text(
                               "Hotel/Resort",
                               style: mytextstyle(
@@ -247,6 +265,9 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           children: [
                             Image.asset("images/res.png"),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Text(
                               "Restaurant",
                               style: mytextstyle(
@@ -257,6 +278,9 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           children: [
                             Image.asset("images/jahaj.png"),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Text(
                               "Cruise",
                               style: mytextstyle(
@@ -267,6 +291,9 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           children: [
                             Image.asset("images/plane.png"),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Text(
                               "Flight",
                               style: mytextstyle(
@@ -274,25 +301,43 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-                        Icon(Icons.arrow_forward_ios_rounded)
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.grey,
+                        )
                       ],
                     ),
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Offers for you",
-                          style: TextStyle(fontSize: 20.sp),
+                          style: TextStyle(
+                              fontSize: 20.sp, fontWeight: FontWeight.bold),
                         ),
                         Icon(
                           Icons.arrow_forward,
                           size: 25.sp,
+                          color: Colors.grey,
                         ),
                       ],
+                    ),
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Container(
+                      height: 1.h,
+                      width: 100.w,
+                      color: Color(0xffD0D0D0),
+                    ),
+                    SizedBox(
+                      height: 8.h,
                     ),
                     Stack(
                       children: [
@@ -474,16 +519,26 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           "Popular Deals",
-                          style: TextStyle(fontSize: 20.sp),
+                          style: TextStyle(
+                              fontSize: 20.sp, fontWeight: FontWeight.bold),
                         ),
                         Icon(
                           Icons.arrow_forward,
                           size: 25.sp,
+                          color: Colors.grey,
                         ),
                       ],
                     ),
                     SizedBox(
                       height: 5.h,
+                    ),
+                    Container(
+                      height: 1.h,
+                      width: 100.w,
+                      color: Color(0xffD0D0D0),
+                    ),
+                    SizedBox(
+                      height: 8.h,
                     ),
                     Container(
                       height: 150.h,
@@ -562,31 +617,86 @@ class _HomePageState extends State<HomePage> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "${data.name}",
-                                                      style: TextStyle(
-                                                          fontSize: 18),
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          size: 14.sp,
-                                                        ),
-                                                        Text(
-                                                          "${data.location}",
-                                                          style: TextStyle(
-                                                              fontSize: 13.sp,
-                                                              color: Color(
-                                                                  0xff9C9C9C)),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "${data.name}",
+                                                        style: TextStyle(
+                                                            fontSize: 18.sp,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.location_on,
+                                                            size: 14.sp,
+                                                          ),
+                                                          Text(
+                                                            "${data.location}",
+                                                            style: TextStyle(
+                                                                fontSize: 13.sp,
+                                                                color: Color(
+                                                                    0xff9C9C9C)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                              height: 20.h,
+                                                              width: 40.w,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300),
+                                                              child: Center(
+                                                                  child: Text(
+                                                                      "Hotel",
+                                                                      style: mytextstyle(
+                                                                          Color(
+                                                                              0xff9C9C9C),
+                                                                          13.sp,
+                                                                          FontWeight
+                                                                              .w400)))),
+                                                          SizedBox(
+                                                            width: 4.w,
+                                                          ),
+                                                          Container(
+                                                              height: 20.h,
+                                                              width: 80.w,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300),
+                                                              child: Center(
+                                                                  child: Text(
+                                                                      "Restaurent",
+                                                                      style: mytextstyle(
+                                                                          Color(
+                                                                              0xff9C9C9C),
+                                                                          13.sp,
+                                                                          FontWeight
+                                                                              .w400)))),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                                 Column(
                                                   children: [
@@ -619,7 +729,12 @@ class _HomePageState extends State<HomePage> {
                                                         ),
                                                       ],
                                                     ),
-                                                    Text("Riview")
+                                                    Text(
+                                                      "Review",
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 11.sp),
+                                                    )
                                                   ],
                                                 ),
                                               ],
@@ -652,7 +767,10 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 Column(
                                                   children: [
-                                                    Text("available offer"),
+                                                    Text("available offer",
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize: 10.sp)),
                                                     Text(
                                                       "${data.offerPrice}\$",
                                                       style: mytextstyle(

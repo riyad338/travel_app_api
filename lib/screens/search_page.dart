@@ -18,6 +18,7 @@ import 'package:travel_app/custom_widget/hotel_data.dart';
 import 'package:travel_app/custom_widget/resturant_data.dart';
 import 'package:travel_app/models/hotel_model.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
+import 'package:travel_app/providers/resturant_provider.dart';
 import 'package:travel_app/screens/hotel_detils_pge.dart';
 import 'package:travel_app/screens/login_page.dart';
 import 'package:travel_app/utils/constance.dart';
@@ -32,11 +33,12 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  String _searchQuery = '';
   String Address = "";
   int currentindex = 0;
 
   late HotelProvider hotelProvider;
-
+  late ResturantProvider resturantProvider;
   List<String> items = [
     "Hotel/Resort",
     "Restaurant",
@@ -50,24 +52,23 @@ class _SearchPageState extends State<SearchPage> {
 
   List pageviewlist = [HotelData(), ResturantData(), AirPlane()];
   int current = 0;
+
+  List<Marker> _marker = [];
+  List<Marker> _list = [];
   late GoogleMapController googleMapController;
 
   static const CameraPosition initialCameraPosition = CameraPosition(
-      target: LatLng(23.42796133580664, 90.085749655962), zoom: 14);
+      target: LatLng(23.42796133580664, 90.085749655962), zoom: 1);
 
   Set<Marker> markers = {};
-  PageController? pageController;
 
   @override
-  void initState() {
-    pageController = PageController(initialPage: currentindex);
-    super.initState();
-  }
-
   void didChangeDependencies() {
     hotelProvider = Provider.of<HotelProvider>(context);
     hotelProvider.allHotel();
-
+    resturantProvider = Provider.of<ResturantProvider>(context);
+    resturantProvider.allResturant();
+    _marker.addAll(_list);
     super.didChangeDependencies();
   }
 
@@ -101,11 +102,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             borderRadius: BorderRadius.circular(20.r)),
                         child: Center(
-                          child: Icon(
-                            Icons.shower,
-                            size: 35.sp,
-                            color: Colors.white,
-                          ),
+                          child: Image.asset("images/rain.png"),
                         ),
                       ),
                       Text(
@@ -146,6 +143,11 @@ class _SearchPageState extends State<SearchPage> {
                             children: [
                               Flexible(
                                 child: TextFormField(
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _searchQuery = value;
+                                    });
+                                  },
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide.none,
@@ -162,6 +164,83 @@ class _SearchPageState extends State<SearchPage> {
                                 padding: EdgeInsets.only(left: 8.0.w),
                                 child: InkWell(
                                   onTap: () {
+                                    FutureBuilder(
+                                        future:
+                                            resturantProvider.allResturant(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                              child: SpinKitFadingCircle(
+                                                color: Colors.greenAccent,
+                                              ),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (snapshot.data == null) {
+                                            return Text(
+                                                "snapshot data are null");
+                                          }
+                                          return ListView.builder(
+                                              itemCount: resturantProvider
+                                                  .resturantModel!
+                                                  .restaurantsWithMenusAndRating!
+                                                  .length,
+                                              itemBuilder: (context, index) {
+                                                var lat1 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        1]
+                                                    .longitude;
+                                                var lat2 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        2]
+                                                    .longitude;
+                                                var lat3 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        3]
+                                                    .longitude;
+                                                var lon1 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        1]
+                                                    .longitude;
+                                                var lon2 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        2]
+                                                    .longitude;
+                                                var lon3 = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                        3]
+                                                    .longitude;
+                                                _list.add(Marker(
+                                                    markerId: MarkerId("1"),
+                                                    position: LatLng(
+                                                      double.parse(lat1!),
+                                                      double.parse(lon1!),
+                                                    )));
+                                                _list.add(Marker(
+                                                    markerId: MarkerId("2"),
+                                                    position: LatLng(
+                                                      double.parse(lat2!),
+                                                      double.parse(lon2!),
+                                                    )));
+                                                _list.add(Marker(
+                                                    markerId: MarkerId("3"),
+                                                    position: LatLng(
+                                                      double.parse(lat3!),
+                                                      double.parse(lon3!),
+                                                    )));
+
+                                                return SizedBox();
+                                              });
+                                        });
                                     _modalBottomSheet();
                                   },
                                   child: Container(
@@ -186,148 +265,358 @@ class _SearchPageState extends State<SearchPage> {
                       SizedBox(
                         height: 5.h,
                       ),
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                        borderRadius:
-                                            BorderRadius.circular(20.r),
-                                      ),
-                                      prefixIcon: Icon(
-                                        Icons.calendar_today_outlined,
-                                        color: Colors.grey,
-                                      ),
-                                      hintText: "Date",
-                                      filled: true,
-                                      fillColor: Colors.white),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Container(
-                                  height: 55.h,
-                                  width: 65.w,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.r),
-                                      color: Colors.white),
-                                  child: Icon(
-                                    Icons.search,
-                                    size: 30.sp,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                                child: Container(
-                                  height: 55.h,
-                                  width: 65.w,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.r),
-                                      color: Colors.white),
-                                  child: Icon(
-                                    Icons.filter_list,
-                                    size: 30.sp,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 400,
-                        margin: EdgeInsets.all(5),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              /// CUSTOM TABBAR
-                              SizedBox(
-                                width: double.infinity,
-                                height: 60,
-                                child: ListView.builder(
-                                    itemCount: items.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (ctx, index) {
-                                      return Column(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                current = index;
-                                              });
-                                            },
-                                            child: AnimatedContainer(
-                                              duration: const Duration(
-                                                  milliseconds: 300),
-                                              margin: const EdgeInsets.all(5),
-                                              width: 150,
-                                              height: 45,
-                                              decoration: BoxDecoration(
+                      _searchQuery.isNotEmpty
+                          ? FutureBuilder(
+                              future: resturantProvider.allResturant(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: SpinKitFadingCircle(
+                                      color: Colors.greenAccent,
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.data == null) {
+                                  return Text("snapshot data are null");
+                                }
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: _searchQuery.isEmpty
+                                        ? 0
+                                        : resturantProvider
+                                            .resturantModel!
+                                            .restaurantsWithMenusAndRating!
+                                            .length,
+                                    itemBuilder: (context, index) {
+                                      var data = resturantProvider
+                                              .resturantModel!
+                                              .restaurantsWithMenusAndRating![
+                                          index];
+
+                                      if (data.location!.toLowerCase().contains(
+                                          _searchQuery.toLowerCase())) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10.0, horizontal: 10),
+                                          child: Container(
+                                            decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius: current == index
-                                                    ? BorderRadius.circular(15)
-                                                    : BorderRadius.circular(10),
-                                                border: current == index
-                                                    ? Border.all(
-                                                        color: Colors.green,
-                                                        width: 2)
-                                                    : null,
-                                              ),
-                                              child: Center(
-                                                child: Row(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            height: 150,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: 100,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "https://ddtravels.safafirm.com/${data.photo}",
+                                                    width: double.infinity,
+                                                    height: 250,
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            SpinKitFadingCircle(
+                                                      color: Colors.greenAccent,
+                                                    ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "images/hote.jpg",
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+
+                                                  // NetworkImage(
+                                                  //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "${data.name}",
+                                                            style: TextStyle(
+                                                                fontSize: 18),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                size: 14,
+                                                              ),
+                                                              Text(
+                                                                "${data.location}",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        13,
+                                                                    color: Color(
+                                                                        0xff9C9C9C)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Text(
+                                                          "${data.description}"),
+                                                      Column(
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffF4B806),
+                                                              ),
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffF4B806),
+                                                              ),
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffF4B806),
+                                                              ),
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffF4B806),
+                                                              ),
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffF4B806),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Text("Riview")
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        child: Image.asset(
-                                                            img[index])),
-                                                    Text(
-                                                      items[index],
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: current ==
-                                                                  index
-                                                              ? Colors.green
-                                                              : Colors.grey),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(
+                                                              "images/offershap.png"),
+                                                          fit: BoxFit.fitHeight,
+                                                        ),
+                                                      ),
+                                                      height: 40,
+                                                      width: 40,
+                                                      child: Center(
+                                                        child: Text(
+                                                          "${data.discount}%",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ],
-                                                ),
-                                              ),
+                                                )
+                                              ],
                                             ),
                                           ),
-                                          Visibility(
-                                              visible: current == index,
-                                              child: Container(
-                                                width: 5,
-                                                height: 5,
-                                                decoration: const BoxDecoration(
-                                                    color: Colors.green,
-                                                    shape: BoxShape.circle),
-                                              ))
-                                        ],
-                                      );
-                                    }),
+                                        );
+                                      }
+                                      return Container();
+                                    });
+                              })
+                          : Container(),
+                      _searchQuery.isEmpty
+                          ? Container(
+                              child: Padding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 8.0.w),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide.none,
+                                              borderRadius:
+                                                  BorderRadius.circular(20.r),
+                                            ),
+                                            prefixIcon: Icon(
+                                              Icons.calendar_today_outlined,
+                                              color: Colors.grey,
+                                            ),
+                                            hintText: "Date",
+                                            filled: true,
+                                            fillColor: Colors.white),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: Container(
+                                        height: 55.h,
+                                        width: 65.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15.r),
+                                            color: Colors.white),
+                                        child: Icon(
+                                          Icons.search,
+                                          size: 30.sp,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: Container(
+                                        height: 55.h,
+                                        width: 65.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15.r),
+                                            color: Colors.white),
+                                        child: Icon(
+                                          Icons.filter_list,
+                                          size: 30.sp,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+                            )
+                          : SizedBox(),
+                      _searchQuery.isEmpty
+                          ? Container(
+                              width: 400,
+                              margin: EdgeInsets.all(5),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    /// CUSTOM TABBAR
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 60,
+                                      child: ListView.builder(
+                                          itemCount: items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (ctx, index) {
+                                            return Column(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      current = index;
+                                                    });
+                                                  },
+                                                  child: AnimatedContainer(
+                                                    duration: const Duration(
+                                                        milliseconds: 300),
+                                                    margin:
+                                                        const EdgeInsets.all(5),
+                                                    width: 150,
+                                                    height: 45,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          current == index
+                                                              ? BorderRadius
+                                                                  .circular(15)
+                                                              : BorderRadius
+                                                                  .circular(10),
+                                                      border: current == index
+                                                          ? Border.all(
+                                                              color:
+                                                                  Colors.green,
+                                                              width: 2)
+                                                          : null,
+                                                    ),
+                                                    child: Center(
+                                                      child: Row(
+                                                        children: [
+                                                          ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              child: Image
+                                                                  .asset(img[
+                                                                      index])),
+                                                          Text(
+                                                            items[index],
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: current ==
+                                                                        index
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .grey),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                    visible: current == index,
+                                                    child: Container(
+                                                      width: 5,
+                                                      height: 5,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              color:
+                                                                  Colors.green,
+                                                              shape: BoxShape
+                                                                  .circle),
+                                                    ))
+                                              ],
+                                            );
+                                          }),
+                                    ),
 
-                              Container(
-                                child: pageviewlist[current] == null
-                                    ? ""
-                                    : pageviewlist[current],
+                                    Container(
+                                      child: pageviewlist[current] == null
+                                          ? ""
+                                          : pageviewlist[current],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            )
+                          : SizedBox(),
                     ],
                   ),
                 )),
@@ -394,7 +683,7 @@ class _SearchPageState extends State<SearchPage> {
                             myLocationButtonEnabled: true,
                             myLocationEnabled: true,
                             initialCameraPosition: initialCameraPosition,
-                            markers: markers,
+                            markers: Set<Marker>.of(_marker),
                             zoomControlsEnabled: false,
                             mapType: MapType.normal,
                             onMapCreated: (GoogleMapController controller) {

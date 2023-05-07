@@ -18,6 +18,7 @@ import 'package:travel_app/screens/resturant_details_page.dart';
 import 'package:travel_app/screens/search_page.dart';
 import 'package:travel_app/screens/social_login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_app/screens/user_details_page.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
               ResturantDetailsPage.routeName: (context) =>
                   ResturantDetailsPage(),
               ForYouPage.routeName: (context) => ForYouPage(),
-              ForYouPage.routeName: (context) => ForYouPage(),
+              UserProfile.routeName: (context) => UserProfile(),
             },
           );
         });
