@@ -26,7 +26,7 @@ class _HotelDataState extends State<HotelData> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
+      height: 430,
       child: FutureBuilder(
           future: hotelProvider.allHotel(),
           builder: (context, snapshot) {
@@ -113,6 +113,39 @@ class _HotelDataState extends State<HotelData> {
                                         ),
                                       ],
                                     ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                        height: 20.h,
+                                        width: 40.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            color: Colors.grey.shade300),
+                                        child: Center(
+                                            child: Text("Hotel",
+                                                style: mytextstyle(
+                                                    Color(0xff9C9C9C),
+                                                    13.sp,
+                                                    FontWeight.w400)))),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                    Container(
+                                        height: 20.h,
+                                        width: 80.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            color: Colors.grey.shade300),
+                                        child: Center(
+                                            child: Text("Restaurent",
+                                                style: mytextstyle(
+                                                    Color(0xff9C9C9C),
+                                                    13.sp,
+                                                    FontWeight.w400)))),
                                   ],
                                 ),
                                 Column(

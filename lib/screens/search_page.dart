@@ -16,8 +16,10 @@ import 'package:travel_app/CustomHttp/customhttp.dart';
 import 'package:travel_app/custom_widget/air_plane.dart';
 import 'package:travel_app/custom_widget/all_location_map.dart';
 import 'package:travel_app/custom_widget/hotel_data.dart';
+import 'package:travel_app/custom_widget/mp.dart';
 import 'package:travel_app/custom_widget/resturant_data.dart';
 import 'package:travel_app/models/hotel_model.dart';
+import 'package:travel_app/models/resturant_model.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/providers/resturant_provider.dart';
 import 'package:travel_app/screens/hotel_detils_pge.dart';
@@ -53,16 +55,20 @@ class _SearchPageState extends State<SearchPage> {
 
   List pageviewlist = [HotelData(), ResturantData(), AirPlane()];
   int current = 0;
-
+  List<String> _list = [];
+  String? lat;
+  String? lon;
+  int inb = 3;
+  String? _category;
   Set<Marker> markers = {};
-
+  RestaurantsWithMenusAndRating? data;
   @override
   void didChangeDependencies() {
     hotelProvider = Provider.of<HotelProvider>(context);
     hotelProvider.allHotel();
     resturantProvider = Provider.of<ResturantProvider>(context);
     resturantProvider.allResturant();
-
+    _list;
     super.didChangeDependencies();
   }
 
@@ -158,83 +164,11 @@ class _SearchPageState extends State<SearchPage> {
                                 padding: EdgeInsets.only(left: 8.0.w),
                                 child: InkWell(
                                   onTap: () {
-                                    FutureBuilder(
-                                        future:
-                                            resturantProvider.allResturant(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return Center(
-                                              child: SpinKitFadingCircle(
-                                                color: Colors.greenAccent,
-                                              ),
-                                            );
-                                          } else if (snapshot.hasError) {
-                                            return Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          } else if (snapshot.data == null) {
-                                            return Text(
-                                                "snapshot data are null");
-                                          }
-                                          return ListView.builder(
-                                              itemCount: resturantProvider
-                                                  .resturantModel!
-                                                  .restaurantsWithMenusAndRating!
-                                                  .length,
-                                              itemBuilder: (context, index) {
-                                                // var lat1 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         1]
-                                                //     .longitude;
-                                                // var lat2 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         2]
-                                                //     .longitude;
-                                                // var lat3 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         3]
-                                                //     .longitude;
-                                                // var lon1 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         1]
-                                                //     .longitude;
-                                                // var lon2 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         2]
-                                                //     .longitude;
-                                                // var lon3 = resturantProvider
-                                                //     .resturantModel!
-                                                //     .restaurantsWithMenusAndRating![
-                                                //         3]
-                                                //     .longitude;
-                                                // _list.add(Marker(
-                                                //     markerId: MarkerId("1"),
-                                                //     position: LatLng(
-                                                //       double.parse(lat1!),
-                                                //       double.parse(lon1!),
-                                                //     )));
-                                                // _list.add(Marker(
-                                                //     markerId: MarkerId("2"),
-                                                //     position: LatLng(
-                                                //       double.parse(lat2!),
-                                                //       double.parse(lon2!),
-                                                //     )));
-                                                // _list.add(Marker(
-                                                //     markerId: MarkerId("3"),
-                                                //     position: LatLng(
-                                                //       double.parse(lat3!),
-                                                //       double.parse(lon3!),
-                                                //     )));
-
-                                                return SizedBox();
-                                              });
-                                        });
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             GoogeMapMarker()));
                                     showModalBottomSheet(
                                         context: context,
                                         builder: (builder) {
@@ -263,196 +197,432 @@ class _SearchPageState extends State<SearchPage> {
                       SizedBox(
                         height: 5.h,
                       ),
-                      _searchQuery.isNotEmpty
-                          ? FutureBuilder(
-                              future: resturantProvider.allResturant(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: SpinKitFadingCircle(
-                                      color: Colors.greenAccent,
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                } else if (snapshot.data == null) {
-                                  return Text("snapshot data are null");
-                                }
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: _searchQuery.isEmpty
-                                        ? 0
-                                        : resturantProvider
-                                            .resturantModel!
-                                            .restaurantsWithMenusAndRating!
-                                            .length,
-                                    itemBuilder: (context, index) {
-                                      var data = resturantProvider
-                                              .resturantModel!
-                                              .restaurantsWithMenusAndRating![
-                                          index];
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _searchQuery.isNotEmpty
+                                ? FutureBuilder(
+                                    future: hotelProvider.allHotel(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                          child: SpinKitFadingCircle(
+                                            color: Colors.greenAccent,
+                                          ),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      } else if (snapshot.data == null) {
+                                        return Text("snapshot data are null");
+                                      }
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: _searchQuery.isEmpty
+                                              ? 0
+                                              : hotelProvider.hotelModel!
+                                                  .hotelList!.length,
+                                          itemBuilder: (context, index) {
+                                            _list.add(
+                                                "${hotelProvider.hotelModel!.hotelList![index].location}");
+                                            var data = hotelProvider
+                                                .hotelModel!.hotelList![index];
 
-                                      if (data.location!.toLowerCase().contains(
-                                          _searchQuery.toLowerCase())) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10.0, horizontal: 10),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            height: 150,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  height: double.infinity,
-                                                  width: 100,
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        "https://ddtravels.safafirm.com/${data.photo}",
-                                                    width: double.infinity,
-                                                    height: 250,
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            SpinKitFadingCircle(
-                                                      color: Colors.greenAccent,
-                                                    ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Image.asset(
-                                                      "images/hote.jpg",
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-
-                                                  // NetworkImage(
-                                                  //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                            if (data.location!
+                                                .toLowerCase()
+                                                .contains(_searchQuery
+                                                    .toLowerCase())) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0,
+                                                        horizontal: 10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  height: 150,
+                                                  child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "${data.name}",
-                                                            style: TextStyle(
-                                                                fontSize: 18),
+                                                      Container(
+                                                        height: double.infinity,
+                                                        width: 100,
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              "https://ddtravels.safafirm.com/${data.photo}",
+                                                          width:
+                                                              double.infinity,
+                                                          height: 250,
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              SpinKitFadingCircle(
+                                                            color: Colors
+                                                                .greenAccent,
                                                           ),
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                size: 14,
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "images/hote.jpg",
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+
+                                                        // NetworkImage(
+                                                        //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 8.0),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  "${data.name}",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on,
+                                                                      size: 14,
+                                                                    ),
+                                                                    Text(
+                                                                      "${data.location}",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              13,
+                                                                          color:
+                                                                              Color(0xff9C9C9C)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                                "${data.description}"),
+                                                            Column(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text("Riview")
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              image:
+                                                                  DecorationImage(
+                                                                image: AssetImage(
+                                                                    "images/offershap.png"),
+                                                                fit: BoxFit
+                                                                    .fitHeight,
                                                               ),
-                                                              Text(
-                                                                "${data.location}",
+                                                            ),
+                                                            height: 40,
+                                                            width: 40,
+                                                            child: Center(
+                                                              child: Text(
+                                                                "${data.discount}%",
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         13,
-                                                                    color: Color(
-                                                                        0xff9C9C9C)),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
-                                                            ],
+                                                            ),
                                                           ),
                                                         ],
-                                                      ),
-                                                      Text(
-                                                          "${data.description}"),
-                                                      Column(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.star,
-                                                                color: Color(
-                                                                    0xffF4B806),
-                                                              ),
-                                                              Icon(
-                                                                Icons.star,
-                                                                color: Color(
-                                                                    0xffF4B806),
-                                                              ),
-                                                              Icon(
-                                                                Icons.star,
-                                                                color: Color(
-                                                                    0xffF4B806),
-                                                              ),
-                                                              Icon(
-                                                                Icons.star,
-                                                                color: Color(
-                                                                    0xffF4B806),
-                                                              ),
-                                                              Icon(
-                                                                Icons.star,
-                                                                color: Color(
-                                                                    0xffF4B806),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Text("Riview")
-                                                        ],
-                                                      ),
+                                                      )
                                                     ],
                                                   ),
                                                 ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                              "images/offershap.png"),
-                                                          fit: BoxFit.fitHeight,
-                                                        ),
-                                                      ),
-                                                      height: 40,
-                                                      width: 40,
-                                                      child: Center(
-                                                        child: Text(
-                                                          "${data.discount}%",
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
+                                              );
+                                            }
+                                            return Container();
+                                          });
+                                    })
+                                : Container(),
+                            _searchQuery.isNotEmpty
+                                ? FutureBuilder(
+                                    future: resturantProvider.allResturant(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                          child: SpinKitFadingCircle(
+                                            color: Colors.greenAccent,
                                           ),
                                         );
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      } else if (snapshot.data == null) {
+                                        return Text("snapshot data are null");
                                       }
-                                      return Container();
-                                    });
-                              })
-                          : Container(),
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: _searchQuery.isEmpty
+                                              ? 0
+                                              : resturantProvider
+                                                  .resturantModel!
+                                                  .restaurantsWithMenusAndRating!
+                                                  .length,
+                                          itemBuilder: (context, index) {
+                                            _list.add(
+                                                "${resturantProvider.resturantModel!.restaurantsWithMenusAndRating![index].location}");
+                                            var data = resturantProvider
+                                                    .resturantModel!
+                                                    .restaurantsWithMenusAndRating![
+                                                index];
+
+                                            if (data.location!
+                                                .toLowerCase()
+                                                .contains(_searchQuery
+                                                    .toLowerCase())) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0,
+                                                        horizontal: 10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  height: 150,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        height: double.infinity,
+                                                        width: 100,
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              "https://ddtravels.safafirm.com/${data.photo}",
+                                                          width:
+                                                              double.infinity,
+                                                          height: 250,
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              SpinKitFadingCircle(
+                                                            color: Colors
+                                                                .greenAccent,
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "images/hote.jpg",
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+
+                                                        // NetworkImage(
+                                                        //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 8.0),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  "${data.name}",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          18),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on,
+                                                                      size: 14,
+                                                                    ),
+                                                                    Text(
+                                                                      "${data.location}",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              13,
+                                                                          color:
+                                                                              Color(0xff9C9C9C)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Text(
+                                                                "${data.description}"),
+                                                            Column(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .star,
+                                                                      color: Color(
+                                                                          0xffF4B806),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text("Riview")
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              image:
+                                                                  DecorationImage(
+                                                                image: AssetImage(
+                                                                    "images/offershap.png"),
+                                                                fit: BoxFit
+                                                                    .fitHeight,
+                                                              ),
+                                                            ),
+                                                            height: 40,
+                                                            width: 40,
+                                                            child: Center(
+                                                              child: Text(
+                                                                "${data.discount}%",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        13,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                            return Container();
+                                          });
+                                    })
+                                : Container()
+                          ],
+                        ),
+                      ),
                       _searchQuery.isEmpty
                           ? Container(
                               child: Padding(

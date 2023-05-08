@@ -9,11 +9,13 @@ class HomePageProvider with ChangeNotifier {
 
   Future<PopularDealsModel> popularDeal() async {
     popularDealsModel = await CustomHttpRequest.popularDeal();
+
     return popularDealsModel!;
   }
 
   Future<UserModel> userdata() async {
     userModel = await CustomHttpRequest.userdata();
+
     return userModel!;
   }
 }

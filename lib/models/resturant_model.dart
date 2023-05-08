@@ -140,7 +140,7 @@ class RestaurantMenu {
   String? photo;
   String? tags;
   String? status;
-  Null? createdAt;
+  String? createdAt;
   String? updatedAt;
 
   RestaurantMenu(
@@ -187,7 +187,7 @@ class RestaurantMenu {
 class Restaurantrating {
   int? id;
   String? restaurantId;
-  Null? feedback;
+  String? feedback;
   String? star;
   String? createdAt;
   String? updatedAt;

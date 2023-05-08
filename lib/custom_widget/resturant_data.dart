@@ -63,8 +63,10 @@ class _HotelDataState extends State<ResturantData> {
                             arguments: [data, name, id]);
                       },
                       child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20)),
                         height: 150,
-                        color: Colors.white70,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -95,28 +97,33 @@ class _HotelDataState extends State<ResturantData> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${data.name}",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          size: 14,
-                                        ),
-                                        Text(
-                                          "${data.location}",
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xff9C9C9C)),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${data.name}",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            size: 14,
+                                          ),
+                                          Text(
+                                            "${data.location}",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Color(0xff9C9C9C)),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Text("${data.description}"),
                                 Column(

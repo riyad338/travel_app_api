@@ -58,9 +58,7 @@ class _ForYouPageState extends State<ForYouPage> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return Center(
-                                  child: SpinKitFadingCircle(
-                                    color: Colors.greenAccent,
-                                  ),
+                                  child: CircularProgressIndicator(),
                                 );
                               } else if (snapshot.hasError) {
                                 return Center(
@@ -106,14 +104,13 @@ class _ForYouPageState extends State<ForYouPage> {
                       ),
                     ),
                     Container(
-                      height: 50.h,
-                      width: 50.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                      child: Icon(Icons.notifications_outlined),
-                    ),
+                        height: 50.h,
+                        width: 50.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        child: Image.asset("images/achive.png")),
                     SizedBox(
                       width: 10.w,
                     ),
@@ -126,7 +123,10 @@ class _ForYouPageState extends State<ForYouPage> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15.r),
                           ),
-                          child: Icon(Icons.notifications_outlined),
+                          child: Icon(
+                            Icons.notifications_outlined,
+                            color: Color(0xff9C9C9C),
+                          ),
                         ),
                         Positioned(
                             top: 10.h,
@@ -151,7 +151,10 @@ class _ForYouPageState extends State<ForYouPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.trending_up),
+                          Image.asset("images/dis.png"),
+                          SizedBox(
+                            height: 5.h,
+                          ),
                           Text(
                             "My Discounts",
                             style: mytextstyle(
@@ -169,6 +172,10 @@ class _ForYouPageState extends State<ForYouPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Image.asset("images/pendind.png"),
+                          SizedBox(
+                            height: 5.h,
+                          ),
                           Text(
                             "Pending Rewards",
                             style: mytextstyle(
@@ -184,17 +191,26 @@ class _ForYouPageState extends State<ForYouPage> {
                   child: Text(
                     "Ongoing Campaigns",
                     style:
-                        mytextstyle(Color(0xff131B1A), 23.sp, FontWeight.w500),
+                        mytextstyle(Color(0xff131B1A), 22.sp, FontWeight.w500),
                   ),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Container(
+                  height: 1.h,
+                  width: 100.w,
+                  color: Color(0xffD0D0D0),
+                ),
+                SizedBox(
+                  height: 8.h,
                 ),
                 FutureBuilder<LatestCampaignModel>(
                     future: latestCampaignProvider!.latestCampaign(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
-                          child: SpinKitFadingCircle(
-                            color: Colors.greenAccent,
-                          ),
+                          child: CircularProgressIndicator(),
                         );
                       } else if (snapshot.hasError) {
                         return Center(child: CircularProgressIndicator());
@@ -251,32 +267,52 @@ class _ForYouPageState extends State<ForYouPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "${data.title}",
-                                              style: TextStyle(fontSize: 18.sp),
-                                            ),
-                                            Text(
-                                              "${data.type}",
-                                              style: TextStyle(
-                                                  fontSize: 13.sp,
-                                                  color: Color(0xff9C9C9C)),
-                                            ),
-                                            Text(
-                                              "${data.endDate}",
-                                              style: TextStyle(
-                                                  fontSize: 13.sp,
-                                                  color: Color(0xff9C9C9C)),
-                                            ),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "${data.title}",
+                                                style: TextStyle(
+                                                    fontSize: 18.sp,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              SizedBox(
+                                                height: 10.h,
+                                              ),
+                                              Text(
+                                                "${data.type}",
+                                                style: TextStyle(
+                                                    fontSize: 11.sp,
+                                                    color: Color(0xff9C9C9C),
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                              SizedBox(
+                                                height: 50.h,
+                                              ),
+                                              Text(
+                                                "${data.endDate}",
+                                                style: TextStyle(
+                                                    fontSize: 13.sp,
+                                                    color: Color(0xff08BA64),
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
+                                    Icon(Icons.arrow_forward_ios,
+                                        color: Colors.grey),
                                   ],
                                 ),
                               ),

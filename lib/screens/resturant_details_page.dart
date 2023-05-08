@@ -338,7 +338,8 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("Claim 50% Discount"),
+                                    Text(
+                                        "Claim ${resturantList!.discount}% Discount"),
                                     SizedBox(
                                       width: 30,
                                     ),
