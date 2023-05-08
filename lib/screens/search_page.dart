@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_app/CustomHttp/customhttp.dart';
 import 'package:travel_app/custom_widget/air_plane.dart';
+import 'package:travel_app/custom_widget/all_location_map.dart';
 import 'package:travel_app/custom_widget/hotel_data.dart';
 import 'package:travel_app/custom_widget/resturant_data.dart';
 import 'package:travel_app/models/hotel_model.dart';
@@ -53,13 +54,6 @@ class _SearchPageState extends State<SearchPage> {
   List pageviewlist = [HotelData(), ResturantData(), AirPlane()];
   int current = 0;
 
-  List<Marker> _marker = [];
-  List<Marker> _list = [];
-  late GoogleMapController googleMapController;
-
-  static const CameraPosition initialCameraPosition = CameraPosition(
-      target: LatLng(23.42796133580664, 90.085749655962), zoom: 1);
-
   Set<Marker> markers = {};
 
   @override
@@ -68,7 +62,7 @@ class _SearchPageState extends State<SearchPage> {
     hotelProvider.allHotel();
     resturantProvider = Provider.of<ResturantProvider>(context);
     resturantProvider.allResturant();
-    _marker.addAll(_list);
+
     super.didChangeDependencies();
   }
 
@@ -189,59 +183,63 @@ class _SearchPageState extends State<SearchPage> {
                                                   .restaurantsWithMenusAndRating!
                                                   .length,
                                               itemBuilder: (context, index) {
-                                                var lat1 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        1]
-                                                    .longitude;
-                                                var lat2 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        2]
-                                                    .longitude;
-                                                var lat3 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        3]
-                                                    .longitude;
-                                                var lon1 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        1]
-                                                    .longitude;
-                                                var lon2 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        2]
-                                                    .longitude;
-                                                var lon3 = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                        3]
-                                                    .longitude;
-                                                _list.add(Marker(
-                                                    markerId: MarkerId("1"),
-                                                    position: LatLng(
-                                                      double.parse(lat1!),
-                                                      double.parse(lon1!),
-                                                    )));
-                                                _list.add(Marker(
-                                                    markerId: MarkerId("2"),
-                                                    position: LatLng(
-                                                      double.parse(lat2!),
-                                                      double.parse(lon2!),
-                                                    )));
-                                                _list.add(Marker(
-                                                    markerId: MarkerId("3"),
-                                                    position: LatLng(
-                                                      double.parse(lat3!),
-                                                      double.parse(lon3!),
-                                                    )));
+                                                // var lat1 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         1]
+                                                //     .longitude;
+                                                // var lat2 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         2]
+                                                //     .longitude;
+                                                // var lat3 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         3]
+                                                //     .longitude;
+                                                // var lon1 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         1]
+                                                //     .longitude;
+                                                // var lon2 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         2]
+                                                //     .longitude;
+                                                // var lon3 = resturantProvider
+                                                //     .resturantModel!
+                                                //     .restaurantsWithMenusAndRating![
+                                                //         3]
+                                                //     .longitude;
+                                                // _list.add(Marker(
+                                                //     markerId: MarkerId("1"),
+                                                //     position: LatLng(
+                                                //       double.parse(lat1!),
+                                                //       double.parse(lon1!),
+                                                //     )));
+                                                // _list.add(Marker(
+                                                //     markerId: MarkerId("2"),
+                                                //     position: LatLng(
+                                                //       double.parse(lat2!),
+                                                //       double.parse(lon2!),
+                                                //     )));
+                                                // _list.add(Marker(
+                                                //     markerId: MarkerId("3"),
+                                                //     position: LatLng(
+                                                //       double.parse(lat3!),
+                                                //       double.parse(lon3!),
+                                                //     )));
 
                                                 return SizedBox();
                                               });
                                         });
-                                    _modalBottomSheet();
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (builder) {
+                                          return AllLocation();
+                                        });
                                   },
                                   child: Container(
                                     height: 55.h,
@@ -662,66 +660,5 @@ class _SearchPageState extends State<SearchPage> {
     Position position = await Geolocator.getCurrentPosition();
 
     return position;
-  }
-
-  _modalBottomSheet() {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return Container(
-              height: 700.h,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 8,
-                    child: SingleChildScrollView(
-                      child: Column(children: [
-                        Container(
-                          height: 500.h,
-                          width: double.infinity,
-                          child: GoogleMap(
-                            myLocationButtonEnabled: true,
-                            myLocationEnabled: true,
-                            initialCameraPosition: initialCameraPosition,
-                            markers: Set<Marker>.of(_marker),
-                            zoomControlsEnabled: false,
-                            mapType: MapType.normal,
-                            onMapCreated: (GoogleMapController controller) {
-                              googleMapController = controller;
-                            },
-                          ),
-                        )
-                      ]),
-                    ),
-                  ),
-                  Expanded(child: Text(Address)),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      height: 10.h,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Position position = await _determinePosition();
-                          setState(() {});
-                          googleMapController.animateCamera(
-                              CameraUpdate.newCameraPosition(CameraPosition(
-                                  target: LatLng(
-                                      position.latitude, position.longitude),
-                                  zoom: 14)));
-
-                          setState(() {});
-                          markers.add(Marker(
-                              markerId: const MarkerId('currentLocation'),
-                              position: LatLng(
-                                  position.latitude, position.longitude)));
-                        },
-                        child: Text("Use Location"),
-                      ),
-                    ),
-                  )
-                ],
-              ));
-        });
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_app/custom_widget/claimed_discount_page.dart';
 import 'package:travel_app/models/resturant_model.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/providers/resturant_provider.dart';
@@ -108,7 +109,13 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                       CircleAvatar(
                           backgroundColor: Colors.white12,
                           child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (builder) {
+                                      return ClaimedDiscountPage();
+                                    });
+                              },
                               icon: Icon(
                                 Icons.more_vert,
                                 color: Colors.white,
