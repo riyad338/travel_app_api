@@ -169,504 +169,495 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                     ],
                   )),
               Positioned(
-                top: 150,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(30),
-                            topLeft: Radius.circular(30))),
-                    height: 680,
-                    width: 385.w,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Color(0xffF4B806),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("${hotelList!.hotelRating!.star}"),
-                                    ],
-                                  ),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey.shade200,
-                                    child: Image.asset("images/youtube.png"),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Text(
-                              "${name}",
-                              style: mytextstyle(
-                                  Color(0xff131B1A), 24, FontWeight.w500),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(0xff9C9C9C),
-                                ),
-                                Text(
-                                  "${hotelList!.location}",
-                                  style: mytextstyle(
-                                      Color(0xff9C9C9C), 12, FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.0),
-                              child: Text(
-                                "${hotelList!..description}...\nRed More..",
-                                maxLines: 3,
-                                style: mytextstyle(
-                                    Color(0xff9C9C9C), 14, FontWeight.w400),
-                              ),
-                            ),
-                            Row(
+                top: 150.h,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(30),
+                          topLeft: Radius.circular(30))),
+                  height: 680.h,
+                  width: 414.w,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
                                   children: [
-                                    Text(
-                                      "Available Offers",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 20.sp,
-                                      ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Color(0xffF4B806),
                                     ),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.calendar_month_outlined,
-                                            color: Color(0xff9C9C9C)),
-                                        Text(
-                                          "Change Date",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 13.sp,
-                                              color: Color(0xff9C9C9C)),
-                                        )
-                                      ],
+                                    SizedBox(
+                                      width: 10,
                                     ),
+                                    Text("${hotelList!.hotelRating!.star}"),
                                   ],
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text("More",
-                                            style: TextStyle(
-                                                color: Color(0xff9C9C9C))),
-                                        Icon(Icons.arrow_forward_ios,
-                                            color: Color(0xff08BA64))
-                                      ],
-                                    ),
-                                  ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.shade200,
+                                  child: Image.asset("images/youtube.png"),
                                 )
                               ],
                             ),
-                            Container(
-                              height: 250,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: hotelList!.rooms!.length,
-                                  itemBuilder: (context, index) {
-                                    // lat =
-                                    //     double.parse("${hotelList!.latitude}");
-                                    // lon =
-                                    //     double.parse("${hotelList!.longitude}");
-                                    var roomdata = hotelList!.rooms![index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: Container(
-                                        height: 150,
-                                        color: Colors.yellow,
-                                        width: double.infinity,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              height: 150,
-                                              width: 100.w,
-                                              color: Colors.red,
-
-                                              // NetworkImage(
-                                              //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                            ),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  "${roomdata.title}",
-                                                  style: mytextstyle(
-                                                      Colors.black,
-                                                      18,
-                                                      FontWeight.w500),
-                                                ),
-                                                Text(
-                                                  "${roomdata.description}",
-                                                  style: mytextstyle(
-                                                      Colors.black,
-                                                      18,
-                                                      FontWeight.w500),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                          ),
+                          Text(
+                            "${name}",
+                            style: mytextstyle(
+                                Color(0xff131B1A), 24, FontWeight.w500),
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color(0xff9C9C9C),
+                              ),
+                              Text(
+                                "${hotelList!.location}",
+                                style: mytextstyle(
+                                    Color(0xff9C9C9C), 12, FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: Text(
+                              "${hotelList!..description}...\nRed More..",
+                              maxLines: 3,
+                              style: mytextstyle(
+                                  Color(0xff9C9C9C), 14, FontWeight.w400),
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: Column(
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Services",
-                                    style: mytextstyle(
-                                        Colors.black, 17, FontWeight.w500),
+                                    "Available Offers",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20.sp,
+                                    ),
                                   ),
                                   Row(
                                     children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
+                                      Icon(Icons.calendar_month_outlined,
+                                          color: Color(0xff9C9C9C)),
                                       Text(
-                                        "${hotelList!.services}",
+                                        "Change Date",
                                         style: TextStyle(
-                                            color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
-                                            fontSize: 14.sp),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                      Text("${hotelList!.services}",
-                                          style: TextStyle(
-                                              color: Color(0xff9C9C9C),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 14.sp)),
+                                            fontSize: 13.sp,
+                                            color: Color(0xff9C9C9C)),
+                                      )
                                     ],
                                   ),
                                 ],
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                  ),
-                                  child: Text(
-                                    "Latest Review",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 20.sp,
-                                    ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Text("More",
+                                          style: TextStyle(
+                                              color: Color(0xff9C9C9C))),
+                                      Icon(Icons.arrow_forward_ios,
+                                          color: Color(0xff08BA64))
+                                    ],
                                   ),
                                 ),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.arrow_forward_rounded,
-                                      color: Color(0xff9C9C9C),
-                                    ))
-                              ],
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
+                              )
+                            ],
+                          ),
+                          Container(
+                            height: 250,
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: hotelList!.rooms!.length,
+                                itemBuilder: (context, index) {
+                                  // lat =
+                                  //     double.parse("${hotelList!.latitude}");
+                                  // lon =
+                                  //     double.parse("${hotelList!.longitude}");
+                                  var roomdata = hotelList!.rooms![index];
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Container(
+                                      height: 150,
+                                      color: Colors.yellow,
+                                      width: double.infinity,
+                                      child: Row(
                                         children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.teal,
+                                          Container(
+                                            height: 150,
+                                            width: 100.w,
+                                            color: Colors.red,
+
+                                            // NetworkImage(
+                                            //     "https://ddtravels.safafirm.com/${data.photo}"),
                                           ),
                                           Column(
                                             children: [
                                               Text(
-                                                "name",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 14.sp,
-                                                    color: Color(0xff000000)),
+                                                "${roomdata.title}",
+                                                style: mytextstyle(Colors.black,
+                                                    18, FontWeight.w500),
                                               ),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Color(0xffF4B806),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Color(0xffF4B806),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Color(0xffF4B806),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Color(0xffF4B806),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Color(0xffF4B806),
-                                                  ),
-                                                ],
-                                              )
+                                              Text(
+                                                "${roomdata.description}",
+                                                style: mytextstyle(Colors.black,
+                                                    18, FontWeight.w500),
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                      Text("20 Feb, 2023",
-                                          style: mytextstyle(Color(0xff9C9C9C),
-                                              11, FontWeight.w400))
-                                    ],
-                                  ),
-                                  Text(
-                                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ",
-                                    style: mytextstyle(
-                                        Color(0xff9C9C9C), 14, FontWeight.w400),
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Services",
+                                  style: mytextstyle(
+                                      Colors.black, 17, FontWeight.w500),
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text(
+                                      "${hotelList!.services}",
+                                      style: TextStyle(
+                                          color: Color(0xff9C9C9C),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14.sp),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.done,
+                                      color: Colors.green,
+                                    ),
+                                    Text("${hotelList!.services}",
+                                        style: TextStyle(
+                                            color: Color(0xff9C9C9C),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.sp)),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 15.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  height: 300.h,
-                                  width: 400,
-                                  child: GoogleMap(
-                                    compassEnabled: true,
-                                    myLocationButtonEnabled: true,
-                                    myLocationEnabled: true,
-                                    initialCameraPosition: CameraPosition(
-                                        target: LatLng(
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Text(
+                                  "Latest Review",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20.sp,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Color(0xff9C9C9C),
+                                  ))
+                            ],
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: Colors.teal,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              "name",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14.sp,
+                                                  color: Color(0xff000000)),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Color(0xffF4B806),
+                                                ),
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Color(0xffF4B806),
+                                                ),
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Color(0xffF4B806),
+                                                ),
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Color(0xffF4B806),
+                                                ),
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Color(0xffF4B806),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Text("20 Feb, 2023",
+                                        style: mytextstyle(Color(0xff9C9C9C),
+                                            11, FontWeight.w400))
+                                  ],
+                                ),
+                                Text(
+                                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ",
+                                  style: mytextstyle(
+                                      Color(0xff9C9C9C), 14, FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                height: 300.h,
+                                width: 400,
+                                child: GoogleMap(
+                                  compassEnabled: true,
+                                  myLocationButtonEnabled: true,
+                                  myLocationEnabled: true,
+                                  initialCameraPosition: CameraPosition(
+                                      target: LatLng(
+                                          double.parse(
+                                              "${hotelList!.latitude}"),
+                                          double.parse(
+                                              "${hotelList!.longitude}")),
+                                      zoom: 14),
+                                  markers: Set<Marker>.of([
+                                    Marker(
+                                        icon: BitmapDescriptor.defaultMarker,
+                                        markerId:
+                                            MarkerId("${hotelList!.name}"),
+                                        infoWindow:
+                                            InfoWindow(title: hotelList!.name),
+                                        position: LatLng(
                                             double.parse(
                                                 "${hotelList!.latitude}"),
                                             double.parse(
-                                                "${hotelList!.longitude}")),
-                                        zoom: 14),
-                                    markers: Set<Marker>.of([
-                                      Marker(
-                                          icon: BitmapDescriptor.defaultMarker,
-                                          markerId:
-                                              MarkerId("${hotelList!.name}"),
-                                          infoWindow: InfoWindow(
-                                              title: hotelList!.name),
-                                          position: LatLng(
-                                              double.parse(
-                                                  "${hotelList!.latitude}"),
-                                              double.parse(
-                                                  "${hotelList!.longitude}")))
-                                    ]),
-                                    zoomControlsEnabled: true,
-                                    mapType: MapType.normal,
-                                    onMapCreated:
-                                        (GoogleMapController controller) {
-                                      googleMapController = controller;
-                                      setState(() {});
-                                    },
-                                  ),
+                                                "${hotelList!.longitude}")))
+                                  ]),
+                                  zoomControlsEnabled: true,
+                                  mapType: MapType.normal,
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    googleMapController = controller;
+                                    setState(() {});
+                                  },
                                 ),
                               ),
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                onTap: () {
-                                  final url = "${hotelList!.facebookPage}";
-                                  launchUrl(Uri.parse(url));
-                                },
-                                tileColor: Colors.white12,
-                                leading: Icon(
-                                  Icons.facebook_rounded,
-                                  size: 30,
-                                ),
-                                title: Text(
-                                  "Facebook Page",
-                                  style: TextStyle(color: Color(0xff9C9C9C)),
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                ),
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: ListTile(
+                              onTap: () {
+                                final url = "${hotelList!.facebookPage}";
+                                launchUrl(Uri.parse(url));
+                              },
+                              tileColor: Colors.white12,
+                              leading: Icon(
+                                Icons.facebook_rounded,
+                                size: 30,
+                              ),
+                              title: Text(
+                                "Facebook Page",
+                                style: TextStyle(color: Color(0xff9C9C9C)),
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
                               ),
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                onTap: () {
-                                  final url = "${hotelList!.websiteLink}";
-                                  launchUrl(Uri.parse(url));
-                                },
-                                tileColor: Colors.white12,
-                                leading: Image.asset("images/website.png"),
-                                title: Text(
-                                  "Visit Website",
-                                  style: TextStyle(color: Color(0xff9C9C9C)),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: Color(0xff9C9C9C)),
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: ListTile(
+                              onTap: () {
+                                final url = "${hotelList!.websiteLink}";
+                                launchUrl(Uri.parse(url));
+                              },
+                              tileColor: Colors.white12,
+                              leading: Image.asset("images/website.png"),
+                              title: Text(
+                                "Visit Website",
+                                style: TextStyle(color: Color(0xff9C9C9C)),
                               ),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: Color(0xff9C9C9C)),
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                tileColor: Colors.white12,
-                                leading: Image.asset("images/privacypolicy.png",
-                                    color: Color(0xff9C9C9C)),
-                                title: Text(
-                                  "Privacy Policy",
-                                  style: TextStyle(color: Color(0xff9C9C9C)),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: Color(0xff9C9C9C)),
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: ListTile(
+                              tileColor: Colors.white12,
+                              leading: Image.asset("images/privacypolicy.png",
+                                  color: Color(0xff9C9C9C)),
+                              title: Text(
+                                "Privacy Policy",
+                                style: TextStyle(color: Color(0xff9C9C9C)),
                               ),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: Color(0xff9C9C9C)),
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                tileColor: Colors.white12,
-                                leading: Image.asset("images/claim.png",
-                                    color: Color(0xff9C9C9C)),
-                                title: Text(
-                                  "How to Claim?",
-                                  style: TextStyle(color: Color(0xff9C9C9C)),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: Color(0xff9C9C9C)),
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: ListTile(
+                              tileColor: Colors.white12,
+                              leading: Image.asset("images/claim.png",
+                                  color: Color(0xff9C9C9C)),
+                              title: Text(
+                                "How to Claim?",
+                                style: TextStyle(color: Color(0xff9C9C9C)),
                               ),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: Color(0xff9C9C9C)),
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                tileColor: Colors.white12,
-                                leading: Icon(
-                                  Icons.headset_mic_outlined,
-                                  color: Color(0xff9C9C9C),
-                                ),
-                                title: Text(
-                                  "Help & Support",
-                                  style: TextStyle(color: Color(0xff9C9C9C)),
-                                ),
-                                trailing: Icon(Icons.arrow_forward_ios,
-                                    color: Color(0xff9C9C9C)),
+                          ),
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: ListTile(
+                              tileColor: Colors.white12,
+                              leading: Icon(
+                                Icons.headset_mic_outlined,
+                                color: Color(0xff9C9C9C),
                               ),
+                              title: Text(
+                                "Help & Support",
+                                style: TextStyle(color: Color(0xff9C9C9C)),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: Color(0xff9C9C9C)),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
