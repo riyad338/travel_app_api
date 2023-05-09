@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class World extends StatefulWidget {
-  const World({Key? key}) : super(key: key);
+  World({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<World> createState() => _WorldState();

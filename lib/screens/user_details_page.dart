@@ -51,41 +51,8 @@ class _UserProfileState extends State<UserProfile> {
                           topLeft: Radius.circular(30.r))),
                   height: 680,
                   width: 414.w,
-                  // child: Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-                  //   child: SingleChildScrollView(
-                  //     child: Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //       color: Colors.white,
-                  //       borderRadius: BorderRadius.circular(20)),
-                  //   height: 150,
-                  //   width: 400,
-
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                 ),
               ),
-
-              // return Column(
-              //   children: [
-              //     Stack(
-              //       children: [
-              //         CircleAvatar(
-              //           backgroundColor:
-              //           Colors.grey.shade300,
-              //           radius: 50.r,
-              //           child: Image.network(
-              //             "https://ddtravels.safafirm.com/${homePageProvider.userModel!.userInfo!.image}",
-              //           ),
-              //         ),
-
-              //       ],
-              //     ),
               Positioned(
                 top: 15,
                 right: 25,
@@ -114,11 +81,11 @@ class _UserProfileState extends State<UserProfile> {
               Positioned(
                 top: 0,
                 child: Container(
-                  height: 715,
-                  width: 414,
+                  height: 776.h,
+                  width: 414.w,
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      padding: EdgeInsets.symmetric(horizontal: 18.0.w),
                       child: Column(
                         children: [
                           Container(
@@ -128,8 +95,8 @@ class _UserProfileState extends State<UserProfile> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8.0.w),
                                       child: Stack(
                                         children: [
                                           Container(

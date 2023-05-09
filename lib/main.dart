@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:travel_app/distance.dart';
 
 import 'package:travel_app/providers/home-page_provider.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
@@ -18,6 +19,7 @@ import 'package:travel_app/screens/resturant_details_page.dart';
 import 'package:travel_app/screens/search_page.dart';
 import 'package:travel_app/screens/social_login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_app/screens/splash_screen.dart';
 import 'package:travel_app/screens/user_details_page.dart';
 
 void main() {
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: GetStartPage(),
+            home: SplashScreenPage(),
             // home: SplashScreenPage(),
             routes: {
               LoginPage.routeName: (context) => LoginPage(),

@@ -113,7 +113,7 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                 showModalBottomSheet(
                                     context: context,
                                     builder: (builder) {
-                                      return ClaimedDiscountPage();
+                                      return Container();
                                     });
                               },
                               icon: Icon(
@@ -190,7 +190,7 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                       ),
                                       Text(
                                           "${resturantList!.restaurantrating!.star}",
-                                          style: mytextstyle(Color(0xff131B1A),
+                                          style: mytextstyle(Color(0xffF4B806),
                                               18, FontWeight.w500)),
                                     ],
                                   ),
@@ -571,7 +571,19 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                             double.parse(
                                                 "${resturantList!.longitude}")),
                                         zoom: 14),
-                                    markers: markers,
+                                    markers: Set<Marker>.of([
+                                      Marker(
+                                          icon: BitmapDescriptor.defaultMarker,
+                                          markerId: MarkerId(
+                                              "${resturantList!.name}"),
+                                          infoWindow: InfoWindow(
+                                              title: resturantList!.name),
+                                          position: LatLng(
+                                              double.parse(
+                                                  "${resturantList!.latitude}"),
+                                              double.parse(
+                                                  "${resturantList!.longitude}")))
+                                    ]),
                                     zoomControlsEnabled: true,
                                     mapType: MapType.normal,
                                     onMapCreated:

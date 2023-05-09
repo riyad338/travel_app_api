@@ -1,10 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:travel_app/custom_widget/contact_for_booking.dart';
 import 'package:travel_app/custom_widget/successfully_claimed_discount.dart';
+import 'package:travel_app/screens/location_permission.dart';
 
 class ClaimedDiscountPage extends StatefulWidget {
-  const ClaimedDiscountPage({Key? key}) : super(key: key);
+  ClaimedDiscountPage({
+    Key? key,
+    required this.distance,
+  }) : super(key: key);
+  double? distance;
 
   @override
   State<ClaimedDiscountPage> createState() => _ClaimedDiscountPageState();
@@ -12,6 +19,11 @@ class ClaimedDiscountPage extends StatefulWidget {
 
 class _ClaimedDiscountPageState extends State<ClaimedDiscountPage> {
   @override
+  void didChangeDependencies() {
+    print("...........climeddiscountpge..................${widget.distance}");
+    super.didChangeDependencies();
+  }
+
   Widget build(BuildContext context) {
     return Container(
       height: 700,
@@ -98,11 +110,20 @@ class _ClaimedDiscountPageState extends State<ClaimedDiscountPage> {
                             EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                         backgroundColor: Color(0xff08BA64)),
                     onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (builder) {
-                            return SuccessfullyClaimed();
-                          });
+                      print(".......................${widget.distance}");
+                      if (widget.distance! <= 1) {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (builder) {
+                              return SuccessfullyClaimed();
+                            });
+                      } else {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (builder) {
+                              return ContactForBooking();
+                            });
+                      }
                     },
                     child: Text(
                       "Claim Discount",

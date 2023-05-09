@@ -110,7 +110,8 @@ class _GetStartPageState extends State<GetStartPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var token = sharedPreferences.getString("token");
     if (token != null) {
-      Navigator.pushNamed(context, BottomNavigationBarPage.routeName);
+      Navigator.pushReplacementNamed(
+          context, BottomNavigationBarPage.routeName);
     }
   }
 }

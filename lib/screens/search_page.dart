@@ -9,6 +9,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,22 +25,29 @@ import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/providers/resturant_provider.dart';
 import 'package:travel_app/screens/hotel_detils_pge.dart';
 import 'package:travel_app/screens/login_page.dart';
+import 'package:travel_app/screens/resturant_details_page.dart';
 import 'package:travel_app/utils/constance.dart';
 import 'package:http/http.dart' as http;
 
 class SearchPage extends StatefulWidget {
   static const String routeName = '/search';
-  const SearchPage({Key? key}) : super(key: key);
+
+  SearchPage({Key? key, this.search}) : super(key: key);
+  String? search;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  String _searchQuery = '';
+  TextEditingController _searchcontroller = TextEditingController();
+  final TextEditingController _startdatepickercntroller =
+      new TextEditingController();
+  TextEditingController _seconddatepickercntroller =
+      new TextEditingController();
   String Address = "";
   int currentindex = 0;
-
+  DateTime? _dateTime;
   late HotelProvider hotelProvider;
   late ResturantProvider resturantProvider;
   List<String> items = [
@@ -64,11 +72,14 @@ class _SearchPageState extends State<SearchPage> {
   RestaurantsWithMenusAndRating? data;
   @override
   void didChangeDependencies() {
+    print("............................................${widget.search}");
     hotelProvider = Provider.of<HotelProvider>(context);
     hotelProvider.allHotel();
     resturantProvider = Provider.of<ResturantProvider>(context);
     resturantProvider.allResturant();
     _list;
+
+    _searchcontroller.text = widget.search!;
     super.didChangeDependencies();
   }
 
@@ -143,9 +154,10 @@ class _SearchPageState extends State<SearchPage> {
                             children: [
                               Flexible(
                                 child: TextFormField(
+                                  controller: _searchcontroller,
                                   onChanged: (value) {
                                     setState(() {
-                                      _searchQuery = value;
+                                      widget.search = value;
                                     });
                                   },
                                   decoration: InputDecoration(
@@ -197,11 +209,317 @@ class _SearchPageState extends State<SearchPage> {
                       SizedBox(
                         height: 5.h,
                       ),
-                      SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            _searchQuery.isNotEmpty
-                                ? FutureBuilder(
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Container(
+                          height: 80,
+                          width: 400,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 8,
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 5,
+                                          child: TextFormField(
+                                            style: TextStyle(fontSize: 14),
+                                            controller:
+                                                _startdatepickercntroller,
+                                            onTap: () async {
+                                              DateTime? pickeddate =
+                                                  await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime.now(),
+                                                // .subtract(Duration(days: 30)),
+                                                lastDate: DateTime.now()
+                                                    .add(Duration(days: 360)),
+                                              );
+                                              if (pickeddate != null) {
+                                                String formate =
+                                                    DateFormat("dd MMM ")
+                                                        .format(pickeddate);
+                                                _startdatepickercntroller.text =
+                                                    formate.toString();
+                                              } else {
+                                                print("Not selected");
+                                              }
+                                            },
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.r),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.calendar_today_outlined,
+                                                  color: Colors.grey,
+                                                ),
+                                                hintText: "DD MM",
+                                                filled: true,
+                                                fillColor: Colors.white),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 1,
+                                          width: 10,
+                                          color: Colors.black,
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: TextFormField(
+                                            style: TextStyle(fontSize: 14),
+                                            controller:
+                                                _seconddatepickercntroller,
+                                            onTap: () async {
+                                              DateTime? pickeddate =
+                                                  await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime.now(),
+                                                // .subtract(Duration(days: 30)),
+                                                lastDate: DateTime.now()
+                                                    .add(Duration(days: 360)),
+                                              );
+                                              if (pickeddate != null) {
+                                                String formate =
+                                                    DateFormat("dd MMM ")
+                                                        .format(pickeddate);
+                                                _seconddatepickercntroller
+                                                    .text = formate.toString();
+                                              } else {
+                                                print("Not selected");
+                                              }
+                                            },
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.r),
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                                hintText: "DD MM",
+                                                filled: true,
+                                                fillColor: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  height: 55.h,
+                                  width: 65.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      color: Colors.white),
+                                  child: Icon(
+                                    Icons.search,
+                                    size: 30.sp,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8),
+                                  child: Container(
+                                    height: 55.h,
+                                    width: 60.w,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
+                                        color: Colors.white),
+                                    child: Icon(
+                                      Icons.filter_list,
+                                      size: 30.sp,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Container(
+                      //   height: 80,
+                      //   width: 400,
+                      //   color: Colors.red,
+                      //   child: Padding(
+                      //     padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+                      //     child: Row(
+                      //       children: [
+                      //         Flexible(
+                      //           child: TextFormField(
+                      //             controller: _startdatepickercntroller,
+                      //             onTap: () async {
+                      //               DateTime? pickeddate = await showDatePicker(
+                      //                 context: context,
+                      //                 initialDate: DateTime.now(),
+                      //                 firstDate: DateTime.now(),
+                      //                 // .subtract(Duration(days: 30)),
+                      //                 lastDate: DateTime.now()
+                      //                     .add(Duration(days: 360)),
+                      //               );
+                      //               if (pickeddate != null) {
+                      //                 String formate = DateFormat("dd MMM ")
+                      //                     .format(pickeddate);
+                      //                 _startdatepickercntroller.text =
+                      //                     formate.toString();
+                      //               } else {
+                      //                 print("Not selected");
+                      //               }
+                      //               _showstartDatePicker();
+                      //               if (_dateTime != null) {
+                      //                 _startdatepickercntroller.text ==
+                      //                     getFormattedDate(_dateTime!, "dd MM");
+                      //               } else {
+                      //                 print("Not selected");
+                      //               }
+                      //               _startdatepickercntroller.text ==
+                      //                   getFormattedDate(_dateTime!, "dd MM");
+                      //             },
+                      //             decoration: InputDecoration(
+                      //                 border: OutlineInputBorder(
+                      //                   borderSide: BorderSide.none,
+                      //                   borderRadius:
+                      //                       BorderRadius.circular(20.r),
+                      //                 ),
+                      //                 prefixIcon: Icon(
+                      //                   Icons.calendar_today_outlined,
+                      //                   color: Colors.grey,
+                      //                 ),
+                      //                 hintText: "Date",
+                      //                 filled: true,
+                      //                 fillColor: Colors.white),
+                      //           ),
+                      //         ),
+                      //         Padding(
+                      //           padding: EdgeInsets.only(left: 8.0),
+                      //           child: Container(
+                      //             height: 55.h,
+                      //             width: 65.w,
+                      //             decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(15.r),
+                      //                 color: Colors.white),
+                      //             child: Icon(
+                      //               Icons.search,
+                      //               size: 30.sp,
+                      //               color: Colors.grey,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         Padding(
+                      //           padding: EdgeInsets.only(left: 8.0),
+                      //           child: Container(
+                      //             height: 55.h,
+                      //             width: 65.w,
+                      //             decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(15.r),
+                      //                 color: Colors.white),
+                      //             child: Icon(
+                      //               Icons.filter_list,
+                      //               size: 30.sp,
+                      //               color: Colors.grey,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      Container(
+                        width: 400,
+                        margin: EdgeInsets.all(5),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              /// CUSTOM TABBAR
+                              SizedBox(
+                                width: double.infinity,
+                                height: 60,
+                                child: ListView.builder(
+                                    itemCount: items.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (ctx, index) {
+                                      return Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                current = index;
+                                              });
+                                            },
+                                            child: AnimatedContainer(
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              margin: const EdgeInsets.all(5),
+                                              width: 150,
+                                              height: 45,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: current == index
+                                                    ? BorderRadius.circular(15)
+                                                    : BorderRadius.circular(10),
+                                                border: current == index
+                                                    ? Border.all(
+                                                        color: Colors.green,
+                                                        width: 2)
+                                                    : null,
+                                              ),
+                                              child: Center(
+                                                child: Row(
+                                                  children: [
+                                                    ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        child: Image.asset(
+                                                            img[index])),
+                                                    Text(
+                                                      items[index],
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: current ==
+                                                                  index
+                                                              ? Colors.green
+                                                              : Colors.grey),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                              visible: current == index,
+                                              child: Container(
+                                                width: 5,
+                                                height: 5,
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.green,
+                                                    shape: BoxShape.circle),
+                                              ))
+                                        ],
+                                      );
+                                    }),
+                              ),
+                              if (current == 0)
+                                FutureBuilder(
                                     future: hotelProvider.allHotel(),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
@@ -219,572 +537,700 @@ class _SearchPageState extends State<SearchPage> {
                                       }
                                       return ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount: _searchQuery.isEmpty
-                                              ? 0
-                                              : hotelProvider.hotelModel!
-                                                  .hotelList!.length,
+                                          itemCount:
+                                              _searchcontroller.text.isEmpty
+                                                  ? 0
+                                                  : hotelProvider.hotelModel!
+                                                      .hotelList!.length,
                                           itemBuilder: (context, index) {
-                                            _list.add(
-                                                "${hotelProvider.hotelModel!.hotelList![index].location}");
                                             var data = hotelProvider
                                                 .hotelModel!.hotelList![index];
+                                            var name = hotelProvider.hotelModel!
+                                                .hotelList![index].name;
+                                            var id = hotelProvider.hotelModel!
+                                                .hotelList![index].id;
+                                            var lat = hotelProvider.hotelModel!
+                                                .hotelList![index].latitude;
+                                            var lon = hotelProvider.hotelModel!
+                                                .hotelList![index].longitude;
 
                                             if (data.location!
                                                 .toLowerCase()
-                                                .contains(_searchQuery
+                                                .contains(_searchcontroller
+                                                    .text!
                                                     .toLowerCase())) {
                                               return Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10.0,
                                                         horizontal: 10),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  height: 150,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: 100,
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              "https://ddtravels.safafirm.com/${data.photo}",
-                                                          width:
-                                                              double.infinity,
-                                                          height: 250,
-                                                          fit: BoxFit.cover,
-                                                          placeholder: (context,
-                                                                  url) =>
-                                                              SpinKitFadingCircle(
-                                                            color: Colors
-                                                                .greenAccent,
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Image.asset(
-                                                            "images/hote.jpg",
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-
-                                                        // NetworkImage(
-                                                        //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 8.0),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  "${data.name}",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          18),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .location_on,
-                                                                      size: 14,
-                                                                    ),
-                                                                    Text(
-                                                                      "${data.location}",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13,
-                                                                          color:
-                                                                              Color(0xff9C9C9C)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                                "${data.description}"),
-                                                            Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                Text("Riview")
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              image:
-                                                                  DecorationImage(
-                                                                image: AssetImage(
-                                                                    "images/offershap.png"),
-                                                                fit: BoxFit
-                                                                    .fitHeight,
-                                                              ),
-                                                            ),
-                                                            height: 40,
-                                                            width: 40,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "${data.discount}%",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        13,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                            return Container();
-                                          });
-                                    })
-                                : Container(),
-                            _searchQuery.isNotEmpty
-                                ? FutureBuilder(
-                                    future: resturantProvider.allResturant(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return Center(
-                                          child: SpinKitFadingCircle(
-                                            color: Colors.greenAccent,
-                                          ),
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return Center(
-                                            child: CircularProgressIndicator());
-                                      } else if (snapshot.data == null) {
-                                        return Text("snapshot data are null");
-                                      }
-                                      return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: _searchQuery.isEmpty
-                                              ? 0
-                                              : resturantProvider
-                                                  .resturantModel!
-                                                  .restaurantsWithMenusAndRating!
-                                                  .length,
-                                          itemBuilder: (context, index) {
-                                            _list.add(
-                                                "${resturantProvider.resturantModel!.restaurantsWithMenusAndRating![index].location}");
-                                            var data = resturantProvider
-                                                    .resturantModel!
-                                                    .restaurantsWithMenusAndRating![
-                                                index];
-
-                                            if (data.location!
-                                                .toLowerCase()
-                                                .contains(_searchQuery
-                                                    .toLowerCase())) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10.0,
-                                                        horizontal: 10),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  height: 150,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Container(
-                                                        height: double.infinity,
-                                                        width: 100,
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              "https://ddtravels.safafirm.com/${data.photo}",
-                                                          width:
-                                                              double.infinity,
-                                                          height: 250,
-                                                          fit: BoxFit.cover,
-                                                          placeholder: (context,
-                                                                  url) =>
-                                                              SpinKitFadingCircle(
-                                                            color: Colors
-                                                                .greenAccent,
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Image.asset(
-                                                            "images/hote.jpg",
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
-
-                                                        // NetworkImage(
-                                                        //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 8.0),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  "${data.name}",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          18),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .location_on,
-                                                                      size: 14,
-                                                                    ),
-                                                                    Text(
-                                                                      "${data.location}",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13,
-                                                                          color:
-                                                                              Color(0xff9C9C9C)),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                                "${data.description}"),
-                                                            Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                    Icon(
-                                                                      Icons
-                                                                          .star,
-                                                                      color: Color(
-                                                                          0xffF4B806),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                Text("Riview")
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              image:
-                                                                  DecorationImage(
-                                                                image: AssetImage(
-                                                                    "images/offershap.png"),
-                                                                fit: BoxFit
-                                                                    .fitHeight,
-                                                              ),
-                                                            ),
-                                                            height: 40,
-                                                            width: 40,
-                                                            child: Center(
-                                                              child: Text(
-                                                                "${data.discount}%",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        13,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w700,
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                            return Container();
-                                          });
-                                    })
-                                : Container()
-                          ],
-                        ),
-                      ),
-                      _searchQuery.isEmpty
-                          ? Container(
-                              child: Padding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: 8.0.w),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide.none,
-                                              borderRadius:
-                                                  BorderRadius.circular(20.r),
-                                            ),
-                                            prefixIcon: Icon(
-                                              Icons.calendar_today_outlined,
-                                              color: Colors.grey,
-                                            ),
-                                            hintText: "Date",
-                                            filled: true,
-                                            fillColor: Colors.white),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Container(
-                                        height: 55.h,
-                                        width: 65.w,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15.r),
-                                            color: Colors.white),
-                                        child: Icon(
-                                          Icons.search,
-                                          size: 30.sp,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Container(
-                                        height: 55.h,
-                                        width: 65.w,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15.r),
-                                            color: Colors.white),
-                                        child: Icon(
-                                          Icons.filter_list,
-                                          size: 30.sp,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox(),
-                      _searchQuery.isEmpty
-                          ? Container(
-                              width: 400,
-                              margin: EdgeInsets.all(5),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    /// CUSTOM TABBAR
-                                    SizedBox(
-                                      width: double.infinity,
-                                      height: 60,
-                                      child: ListView.builder(
-                                          itemCount: items.length,
-                                          scrollDirection: Axis.horizontal,
-                                          itemBuilder: (ctx, index) {
-                                            return Column(
-                                              children: [
-                                                GestureDetector(
+                                                child: InkWell(
                                                   onTap: () {
-                                                    setState(() {
-                                                      current = index;
-                                                    });
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        HotelDetailsPage
+                                                            .routeName,
+                                                        arguments: [
+                                                          data,
+                                                          name,
+                                                          id,
+                                                          lat,
+                                                          lon,
+                                                        ]);
                                                   },
-                                                  child: AnimatedContainer(
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                    margin:
-                                                        const EdgeInsets.all(5),
-                                                    width: 150,
-                                                    height: 45,
+                                                  child: Container(
                                                     decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          current == index
-                                                              ? BorderRadius
-                                                                  .circular(15)
-                                                              : BorderRadius
-                                                                  .circular(10),
-                                                      border: current == index
-                                                          ? Border.all(
-                                                              color:
-                                                                  Colors.green,
-                                                              width: 2)
-                                                          : null,
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                    height: 150,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Container(
+                                                          height:
+                                                              double.infinity,
+                                                          width: 100,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                "https://ddtravels.safafirm.com/${data.photo}",
+                                                            width:
+                                                                double.infinity,
+                                                            height: 250,
+                                                            fit: BoxFit.cover,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                SpinKitFadingCircle(
+                                                              color: Colors
+                                                                  .greenAccent,
+                                                            ),
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Image.asset(
+                                                              "images/hote.jpg",
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+
+                                                          // NetworkImage(
+                                                          //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical:
+                                                                      8.0),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    "${data.name}",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            18),
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .location_on,
+                                                                        size:
+                                                                            14,
+                                                                      ),
+                                                                      Text(
+                                                                        "${data.location}",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                13,
+                                                                            color:
+                                                                                Color(0xff9C9C9C)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Text(
+                                                                  "${data.description}"),
+                                                              Column(
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Color(
+                                                                            0xffF4B806),
+                                                                      ),
+                                                                      Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Color(
+                                                                            0xffF4B806),
+                                                                      ),
+                                                                      Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Color(
+                                                                            0xffF4B806),
+                                                                      ),
+                                                                      Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Color(
+                                                                            0xffF4B806),
+                                                                      ),
+                                                                      Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Color(
+                                                                            0xffF4B806),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Text("Riview")
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                image:
+                                                                    DecorationImage(
+                                                                  image: AssetImage(
+                                                                      "images/offershap.png"),
+                                                                  fit: BoxFit
+                                                                      .fitHeight,
+                                                                ),
+                                                              ),
+                                                              height: 40,
+                                                              width: 40,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "${data.discount}%",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
                                                     ),
-                                                    child: Center(
-                                                      child: Row(
-                                                        children: [
-                                                          ClipRRect(
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                            return Container();
+                                          });
+                                    }),
+
+                              current == 0
+                                  ? Container(
+                                      width: 400,
+                                      height: 430,
+                                      child: FutureBuilder(
+                                          future: hotelProvider.allHotel(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Center(
+                                                child: SpinKitFadingCircle(
+                                                  color: Colors.greenAccent,
+                                                ),
+                                              );
+                                            } else if (snapshot.hasError) {
+                                              return Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            } else if (snapshot.data == null) {
+                                              return Text(
+                                                  "snapshot data are null");
+                                            }
+                                            return ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: _searchcontroller
+                                                        .text.isEmpty
+                                                    ? 0
+                                                    : hotelProvider.hotelModel!
+                                                        .hotelList!.length,
+                                                itemBuilder: (context, index) {
+                                                  var data = hotelProvider
+                                                      .hotelModel!
+                                                      .hotelList![index];
+                                                  var name = hotelProvider
+                                                      .hotelModel!
+                                                      .hotelList![index]
+                                                      .name;
+                                                  var id = hotelProvider
+                                                      .hotelModel!
+                                                      .hotelList![index]
+                                                      .id;
+                                                  var lat = hotelProvider
+                                                      .hotelModel!
+                                                      .hotelList![index]
+                                                      .latitude;
+                                                  var lon = hotelProvider
+                                                      .hotelModel!
+                                                      .hotelList![index]
+                                                      .longitude;
+
+                                                  if (data.location!
+                                                      .toLowerCase()
+                                                      .contains(
+                                                          _searchcontroller
+                                                              .text!
+                                                              .toLowerCase())) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 10.0,
+                                                          horizontal: 10),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              HotelDetailsPage
+                                                                  .routeName,
+                                                              arguments: [
+                                                                data,
+                                                                name,
+                                                                id,
+                                                                lat,
+                                                                lon,
+                                                              ]);
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          15),
-                                                              child: Image
-                                                                  .asset(img[
-                                                                      index])),
-                                                          Text(
-                                                            items[index],
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: current ==
-                                                                        index
-                                                                    ? Colors
-                                                                        .green
-                                                                    : Colors
-                                                                        .grey),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                    visible: current == index,
-                                                    child: Container(
-                                                      width: 5,
-                                                      height: 5,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                              color:
-                                                                  Colors.green,
-                                                              shape: BoxShape
-                                                                  .circle),
-                                                    ))
-                                              ],
-                                            );
-                                          }),
-                                    ),
+                                                                          20)),
+                                                          height: 150,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Container(
+                                                                height: double
+                                                                    .infinity,
+                                                                width: 100,
+                                                                child:
+                                                                    CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      "https://ddtravels.safafirm.com/${data.photo}",
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 250,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      SpinKitFadingCircle(
+                                                                    color: Colors
+                                                                        .greenAccent,
+                                                                  ),
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Image
+                                                                          .asset(
+                                                                    "images/hote.jpg",
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
 
-                                    Container(
-                                      child: pageviewlist[current] == null
-                                          ? ""
-                                          : pageviewlist[current],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox(),
+                                                                // NetworkImage(
+                                                                //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical:
+                                                                        8.0),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "${data.name}",
+                                                                          style:
+                                                                              TextStyle(fontSize: 18),
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.location_on,
+                                                                              size: 14,
+                                                                            ),
+                                                                            Text(
+                                                                              "${data.location}",
+                                                                              style: TextStyle(fontSize: 13, color: Color(0xff9C9C9C)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Text(
+                                                                        "${data.description}"),
+                                                                    Column(
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Text(
+                                                                            "Riview")
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      image:
+                                                                          DecorationImage(
+                                                                        image: AssetImage(
+                                                                            "images/offershap.png"),
+                                                                        fit: BoxFit
+                                                                            .fitHeight,
+                                                                      ),
+                                                                    ),
+                                                                    height: 40,
+                                                                    width: 40,
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          Text(
+                                                                        "${data.discount}%",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                13,
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            color: Colors.white),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Container();
+                                                });
+                                          }))
+                                  : Container(
+                                      height: 430,
+                                      width: 400,
+                                      child: FutureBuilder(
+                                          future:
+                                              resturantProvider.allResturant(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Center(
+                                                child: SpinKitFadingCircle(
+                                                  color: Colors.greenAccent,
+                                                ),
+                                              );
+                                            } else if (snapshot.hasError) {
+                                              return Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            } else if (snapshot.data == null) {
+                                              return Text(
+                                                  "snapshot data are null");
+                                            }
+                                            return ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: _searchcontroller
+                                                        .text.isEmpty
+                                                    ? 0
+                                                    : resturantProvider
+                                                        .resturantModel!
+                                                        .restaurantsWithMenusAndRating!
+                                                        .length,
+                                                itemBuilder: (context, index) {
+                                                  var data = resturantProvider
+                                                          .resturantModel!
+                                                          .restaurantsWithMenusAndRating![
+                                                      index];
+                                                  var name = resturantProvider
+                                                      .resturantModel!
+                                                      .restaurantsWithMenusAndRating![
+                                                          index]
+                                                      .name;
+                                                  var id = resturantProvider
+                                                      .resturantModel!
+                                                      .restaurantsWithMenusAndRating![
+                                                          index]
+                                                      .id;
+
+                                                  if (data.location!
+                                                      .toLowerCase()
+                                                      .contains(
+                                                          _searchcontroller.text
+                                                              .toLowerCase())) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 10.0,
+                                                          horizontal: 10),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              ResturantDetailsPage
+                                                                  .routeName,
+                                                              arguments: [
+                                                                data,
+                                                                name,
+                                                                id
+                                                              ]);
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                          height: 150,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Container(
+                                                                height: double
+                                                                    .infinity,
+                                                                width: 100,
+                                                                child:
+                                                                    CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      "https://ddtravels.safafirm.com/${data.photo}",
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 250,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      SpinKitFadingCircle(
+                                                                    color: Colors
+                                                                        .greenAccent,
+                                                                  ),
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Image
+                                                                          .asset(
+                                                                    "images/hote.jpg",
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
+
+                                                                // NetworkImage(
+                                                                //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical:
+                                                                        8.0),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                          "${data.name}",
+                                                                          style:
+                                                                              TextStyle(fontSize: 18),
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.location_on,
+                                                                              size: 14,
+                                                                            ),
+                                                                            Text(
+                                                                              "${data.location}",
+                                                                              style: TextStyle(fontSize: 13, color: Color(0xff9C9C9C)),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Text(
+                                                                        "${data.description}"),
+                                                                    Column(
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.star,
+                                                                              color: Color(0xffF4B806),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Text(
+                                                                            "Riview")
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      image:
+                                                                          DecorationImage(
+                                                                        image: AssetImage(
+                                                                            "images/offershap.png"),
+                                                                        fit: BoxFit
+                                                                            .fitHeight,
+                                                                      ),
+                                                                    ),
+                                                                    height: 40,
+                                                                    width: 40,
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          Text(
+                                                                        "${data.discount}%",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                13,
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            color: Colors.white),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Container();
+                                                });
+                                          })),
+
+                              // Container(
+                              //   child: pageviewlist[current] == null
+                              //       ? ""
+                              //       : pageviewlist[current],
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 )),
@@ -794,6 +1240,19 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  void _showstartDatePicker() async {
+    final dt = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime.now());
+    if (dt != null) {
+      setState(() {
+        _dateTime = dt;
+      });
+    }
+  }
+
   Future<void> GetAddressFromLatLong(Position position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -801,34 +1260,5 @@ class _SearchPageState extends State<SearchPage> {
     Placemark place = placemarks[0];
     Address =
         '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled');
-    }
-
-    permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.denied) {
-        return Future.error("Location permission denied");
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied');
-    }
-
-    Position position = await Geolocator.getCurrentPosition();
-
-    return position;
   }
 }
