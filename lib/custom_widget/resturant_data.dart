@@ -9,6 +9,7 @@ import 'package:travel_app/screens/hotel_detils_pge.dart';
 import 'package:travel_app/screens/resturant_details_page.dart';
 
 class ResturantData extends StatefulWidget {
+  static const String routeName = '/resturentdaata';
   const ResturantData({Key? key}) : super(key: key);
 
   @override
@@ -26,9 +27,13 @@ class _HotelDataState extends State<ResturantData> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 430.h,
-      child: FutureBuilder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Resturant"),
+        backgroundColor: Color(0xff08BA64),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
           future: resturantProvider.allResturant(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -53,14 +58,17 @@ class _HotelDataState extends State<ResturantData> {
                       .restaurantsWithMenusAndRating![index].name;
                   var id = resturantProvider
                       .resturantModel!.restaurantsWithMenusAndRating![index].id;
-
+                  var lat = resturantProvider.resturantModel!
+                      .restaurantsWithMenusAndRating![index].latitude;
+                  var lon = resturantProvider.resturantModel!
+                      .restaurantsWithMenusAndRating![index].longitude;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(
                             context, ResturantDetailsPage.routeName,
-                            arguments: [data, name, id]);
+                            arguments: [data, name, id, lat, lon]);
                       },
                       child: Container(
                         decoration: BoxDecoration(

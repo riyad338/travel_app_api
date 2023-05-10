@@ -8,6 +8,7 @@ import 'package:travel_app/screens/hotel_detils_pge.dart';
 import 'package:travel_app/utils/constance.dart';
 
 class HotelData extends StatefulWidget {
+  static const String routeName = '/hotelData';
   const HotelData({Key? key}) : super(key: key);
 
   @override
@@ -25,9 +26,13 @@ class _HotelDataState extends State<HotelData> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 430,
-      child: FutureBuilder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Hotel/Resort"),
+        backgroundColor: Color(0xff08BA64),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
           future: hotelProvider.allHotel(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -47,15 +52,16 @@ class _HotelDataState extends State<HotelData> {
                 itemCount: hotelProvider.hotelModel!.hotelList!.length,
                 itemBuilder: (context, index) {
                   var data = hotelProvider.hotelModel!.hotelList![index];
-                  var name = hotelProvider.hotelModel!.hotelList![index].name;
-                  var id = hotelProvider.hotelModel!.hotelList![index].id;
-
+                  var name = data.name;
+                  var id = data.id;
+                  var lat = data.latitude;
+                  var lon = data.longitude;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, HotelDetailsPage.routeName,
-                            arguments: [data, name, id]);
+                            arguments: [data, name, id, lat, lon]);
                       },
                       child: Container(
                         decoration: BoxDecoration(

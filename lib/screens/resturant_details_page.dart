@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_app/custom_widget/claimed_discount_page.dart';
+import 'package:travel_app/modal_sheet/claimed_discount_page.dart';
 import 'package:travel_app/models/resturant_model.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/providers/resturant_provider.dart';
@@ -31,6 +33,12 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
   ResturantProvider? resturantProvider;
   String? name;
   String? id;
+  String? lat;
+  String? lon;
+  var p = 0.017453292519943295;
+  var a = 0.5;
+  var b;
+  double? distance;
   GoogleMapController? mapController;
   late GoogleMapController googleMapController;
 
@@ -51,6 +59,8 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
     resturantList = argList[0];
     name = argList[1];
     id = argList[2].toString();
+    lat = argList[3];
+    lon = argList[4];
 
     super.didChangeDependencies();
   }
@@ -110,10 +120,32 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                           backgroundColor: Colors.white12,
                           child: IconButton(
                               onPressed: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    builder: (builder) {
-                                      return Container();
+                                determinePosition().then((value) => {
+                                      print(
+                                          "................................${value.latitude}"),
+                                      b = a -
+                                          cos((double.parse("${lat!}") -
+                                                      value.latitude) *
+                                                  p) /
+                                              2 +
+                                          cos(value.latitude! * p) *
+                                              cos(double.parse("${lat!}") *
+                                                  p!) *
+                                              (1 -
+                                                  cos((double.parse("${lon!}") -
+                                                          value.longitude!) *
+                                                      p)) /
+                                              2,
+                                      distance = 12742 * asin(sqrt(b)),
+                                      print(
+                                          "..............................ffrrfrd........................${distance}"),
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (builder) {
+                                            return ClaimedDiscountPage(
+                                              distance: distance,
+                                            );
+                                          })
                                     });
                               },
                               icon: Icon(
@@ -528,11 +560,6 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                               11, FontWeight.w400))
                                     ],
                                   ),
-                                  resturantList!.restaurantrating!.feedback ==
-                                          null
-                                      ? Text("")
-                                      : Text(
-                                          "${resturantList!.restaurantrating!.feedback}"),
                                   Text(
                                     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ",
                                     style: mytextstyle(
@@ -565,11 +592,8 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                     myLocationButtonEnabled: true,
                                     myLocationEnabled: true,
                                     initialCameraPosition: CameraPosition(
-                                        target: LatLng(
-                                            double.parse(
-                                                "${resturantList!.latitude}"),
-                                            double.parse(
-                                                "${resturantList!.longitude}")),
+                                        target: LatLng(double.parse("${lat}"),
+                                            double.parse("${lon}")),
                                         zoom: 14),
                                     markers: Set<Marker>.of([
                                       Marker(
@@ -579,10 +603,8 @@ class _HotelDetailsPageState extends State<ResturantDetailsPage> {
                                           infoWindow: InfoWindow(
                                               title: resturantList!.name),
                                           position: LatLng(
-                                              double.parse(
-                                                  "${resturantList!.latitude}"),
-                                              double.parse(
-                                                  "${resturantList!.longitude}")))
+                                              double.parse("${lat}"),
+                                              double.parse("${lon}")))
                                     ]),
                                     zoomControlsEnabled: true,
                                     mapType: MapType.normal,

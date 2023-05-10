@@ -441,6 +441,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                             borderRadius: BorderRadius.circular(30.r)),
                         onPressed: () {
                           register();
+                          FocusScope.of(context).requestFocus(new FocusNode());
                         },
                         child: Text(
                           "Continue",
@@ -534,6 +535,10 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   }
 
   register() async {
+    if (_imagePath == null) {
+      showInToast('Please a select an image');
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       try {
         var uri = "${baseUrl}register";

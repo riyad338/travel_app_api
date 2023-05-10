@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 40.0),
+                      padding: EdgeInsets.only(top: 40.0.h),
                       child: Image.asset(
                         "images/logo.png",
                         height: 80.h,
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontWeight: FontWeight.w500),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      padding: EdgeInsets.symmetric(vertical: 20.0.h),
                       child: Container(
                         height: 2.h,
                         width: 50.w,
@@ -77,8 +77,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 33.0, vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 33.0.w, vertical: 5.h),
                       child: TextFormField(
                         controller: emailController,
                         validator: (value) {
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                         decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 20),
+                            contentPadding: EdgeInsets.only(left: 20.w),
                             hintStyle: TextStyle(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.w400,
@@ -105,8 +105,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 33.0, vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 33.0.w, vertical: 5.h),
                       child: TextFormField(
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                             ),
                             contentPadding:
-                                EdgeInsets.symmetric(horizontal: 20),
+                                EdgeInsets.symmetric(horizontal: 20.w),
                             hintStyle: TextStyle(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.w400,
@@ -142,13 +142,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 20.0, horizontal: 132),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 20.0.h, horizontal: 132.w),
                       child: MaterialButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.r)),
                         onPressed: () {
                           getLogin();
+                          FocusScope.of(context).requestFocus(new FocusNode());
                         },
                         child: Text(
                           "Continue",
@@ -163,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 15, bottom: 101.0),
+                      padding: EdgeInsets.only(top: 15.h, bottom: 101.0.h),
                       child: Text(
                         "Forgot Password?",
                         style: TextStyle(

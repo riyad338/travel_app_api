@@ -8,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_app/modal_sheet/claimed_discount_page.dart';
 import 'package:travel_app/custom_widget/world.dart';
+import 'package:travel_app/models/popular_deals.dart';
+import 'package:travel_app/providers/home-page_provider.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/screens/location_permission.dart';
 import 'package:travel_app/utils/constance.dart';
@@ -15,21 +17,22 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/hotel_model.dart';
 
-class HotelDetailsPage extends StatefulWidget {
-  static const String routeName = '/hotel_detail';
+class PopularDetails extends StatefulWidget {
+  static const String routeName = '/popular_detail';
 
-  HotelDetailsPage({Key? key}) : super(key: key);
+  PopularDetails({Key? key}) : super(key: key);
 
   @override
-  State<HotelDetailsPage> createState() => _HotelDetailsPageState();
+  State<PopularDetails> createState() => _PopularDetailsState();
 }
 
-class _HotelDetailsPageState extends State<HotelDetailsPage> {
+class _PopularDetailsState extends State<PopularDetails> {
   GoogleMapController? mapController;
   late GoogleMapController googleMapController;
 
   Set<Marker> markers = {};
-  HotelList? hotelList;
+  PopularDeals? popularDeals;
+
   String? name;
   String? id;
   String? lat;
@@ -39,14 +42,14 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
   var a = 0.5;
   var b;
   double? distance;
-  HotelProvider? hotelProvider;
-  void didChangeDependencies() {
-    hotelProvider = Provider.of<HotelProvider>(context);
-    hotelProvider!.hotelModel!.hotelList;
+  late HomePageProvider homePageProvider;
 
+  void didChangeDependencies() {
+    homePageProvider = Provider.of<HomePageProvider>(context);
+    homePageProvider.popularDeal();
     final argList = ModalRoute.of(context)!.settings.arguments as List;
 
-    hotelList = argList[0];
+    popularDeals = argList[0];
     name = argList[1];
     id = argList[2].toString();
     lat = argList[3];
@@ -67,7 +70,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
               Container(
                 child: CachedNetworkImage(
                   imageUrl:
-                      "https://ddtravels.safafirm.com/${hotelList!.photo}",
+                      "https://ddtravels.safafirm.com/${popularDeals!.photo}",
                   width: double.infinity,
                   height: 200.h,
                   fit: BoxFit.cover,
@@ -203,7 +206,6 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                     SizedBox(
                                       width: 10,
                                     ),
-                                    Text("${hotelList!.hotelRating!.star}"),
                                   ],
                                 ),
                                 CircleAvatar(
@@ -225,7 +227,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                 color: Color(0xff9C9C9C),
                               ),
                               Text(
-                                "${hotelList!.location}",
+                                "${popularDeals!.location}",
                                 style: mytextstyle(
                                     Color(0xff9C9C9C), 12, FontWeight.w400),
                               ),
@@ -234,7 +236,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
-                              "${hotelList!..description}...\nRed More..",
+                              "${popularDeals!.description}...\nRed More..",
                               maxLines: 3,
                               style: mytextstyle(
                                   Color(0xff9C9C9C), 14, FontWeight.w400),
@@ -287,54 +289,6 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                               )
                             ],
                           ),
-                          Container(
-                            height: 250,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: hotelList!.rooms!.length,
-                                itemBuilder: (context, index) {
-                                  // lat =
-                                  //     double.parse("${hotelList!.latitude}");
-                                  // lon =
-                                  //     double.parse("${hotelList!.longitude}");
-                                  var roomdata = hotelList!.rooms![index];
-                                  return Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: Container(
-                                      height: 150,
-                                      color: Colors.yellow,
-                                      width: double.infinity,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            height: 150,
-                                            width: 100.w,
-                                            color: Colors.red,
-
-                                            // NetworkImage(
-                                            //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                "${roomdata.title}",
-                                                style: mytextstyle(Colors.black,
-                                                    18, FontWeight.w500),
-                                              ),
-                                              Text(
-                                                "${roomdata.description}",
-                                                style: mytextstyle(Colors.black,
-                                                    18, FontWeight.w500),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ),
                           SizedBox(
                             height: 20,
                           ),
@@ -353,7 +307,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -367,7 +321,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       color: Colors.green,
                                     ),
                                     Text(
-                                      "${hotelList!.services}",
+                                      "${popularDeals!.services}",
                                       style: TextStyle(
                                           color: Color(0xff9C9C9C),
                                           fontWeight: FontWeight.w400,
@@ -381,7 +335,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -394,7 +348,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -407,7 +361,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -420,7 +374,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -433,7 +387,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                       Icons.done,
                                       color: Colors.green,
                                     ),
-                                    Text("${hotelList!.services}",
+                                    Text("${popularDeals!.services}",
                                         style: TextStyle(
                                             color: Color(0xff9C9C9C),
                                             fontWeight: FontWeight.w400,
@@ -547,22 +501,22 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                   initialCameraPosition: CameraPosition(
                                       target: LatLng(
                                           double.parse(
-                                              "${hotelList!.latitude}"),
+                                              "${popularDeals!.latitude}"),
                                           double.parse(
-                                              "${hotelList!.longitude}")),
+                                              "${popularDeals!.longitude}")),
                                       zoom: 14),
                                   markers: Set<Marker>.of([
                                     Marker(
                                         icon: BitmapDescriptor.defaultMarker,
                                         markerId:
-                                            MarkerId("${hotelList!.name}"),
-                                        infoWindow:
-                                            InfoWindow(title: hotelList!.name),
+                                            MarkerId("${popularDeals!.name}"),
+                                        infoWindow: InfoWindow(
+                                            title: popularDeals!.name),
                                         position: LatLng(
                                             double.parse(
-                                                "${hotelList!.latitude}"),
+                                                "${popularDeals!.latitude}"),
                                             double.parse(
-                                                "${hotelList!.longitude}")))
+                                                "${popularDeals!.longitude}")))
                                   ]),
                                   zoomControlsEnabled: true,
                                   mapType: MapType.normal,
@@ -580,7 +534,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () {
-                                final url = "${hotelList!.facebookPage}";
+                                final url = "${popularDeals!.facebookPage}";
                                 launchUrl(Uri.parse(url));
                               },
                               tileColor: Colors.white12,
@@ -602,7 +556,7 @@ class _HotelDetailsPageState extends State<HotelDetailsPage> {
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () {
-                                final url = "${hotelList!.websiteLink}";
+                                final url = "${popularDeals!.websiteLink}";
                                 launchUrl(Uri.parse(url));
                               },
                               tileColor: Colors.white12,

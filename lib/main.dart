@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:travel_app/custom_widget/hotel_data.dart';
+import 'package:travel_app/custom_widget/resturant_data.dart';
 import 'package:travel_app/distance.dart';
 
 import 'package:travel_app/providers/home-page_provider.dart';
@@ -13,6 +16,7 @@ import 'package:travel_app/screens/home_page.dart';
 import 'package:travel_app/screens/hotel_detils_pge.dart';
 import 'package:travel_app/screens/location_permission.dart';
 import 'package:travel_app/screens/login_page.dart';
+import 'package:travel_app/screens/popular_details.dart';
 import 'package:travel_app/screens/profile_setup_screen.dart';
 import 'package:travel_app/screens/resturant_details_page.dart';
 import 'package:travel_app/screens/resturant_details_page.dart';
@@ -43,6 +47,10 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
+            theme: ThemeData(
+              textTheme: GoogleFonts.robotoTextTheme(),
+              primarySwatch: Colors.blue,
+            ),
             debugShowCheckedModeBanner: false,
             home: SplashScreenPage(),
             // home: SplashScreenPage(),
@@ -60,6 +68,9 @@ class MyApp extends StatelessWidget {
                   ResturantDetailsPage(),
               ForYouPage.routeName: (context) => ForYouPage(),
               UserProfile.routeName: (context) => UserProfile(),
+              ResturantData.routeName: (context) => ResturantData(),
+              HotelData.routeName: (context) => HotelData(),
+              PopularDetails.routeName: (context) => PopularDetails(),
             },
           );
         });

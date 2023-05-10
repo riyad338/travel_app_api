@@ -15,15 +15,17 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_app/CustomHttp/customhttp.dart';
 import 'package:travel_app/custom_widget/air_plane.dart';
-import 'package:travel_app/custom_widget/all_location_map.dart';
+import 'package:travel_app/modal_sheet/all_location_map.dart';
 import 'package:travel_app/custom_widget/hotel_data.dart';
 import 'package:travel_app/custom_widget/mp.dart';
 import 'package:travel_app/custom_widget/resturant_data.dart';
+import 'package:travel_app/modal_sheet/current_location.dart';
 import 'package:travel_app/models/hotel_model.dart';
 import 'package:travel_app/models/resturant_model.dart';
 import 'package:travel_app/providers/hotel_provider.dart';
 import 'package:travel_app/providers/resturant_provider.dart';
 import 'package:travel_app/screens/hotel_detils_pge.dart';
+import 'package:travel_app/screens/location_permission.dart';
 import 'package:travel_app/screens/login_page.dart';
 import 'package:travel_app/screens/resturant_details_page.dart';
 import 'package:travel_app/utils/constance.dart';
@@ -79,10 +81,16 @@ class _SearchPageState extends State<SearchPage> {
     resturantProvider.allResturant();
     _list;
 
-    _searchcontroller.text = widget.search!;
+    // _searchcontroller.text = widget.search!;
     super.didChangeDependencies();
+    _c();
   }
 
+  _c() {
+    _searchcontroller.text = widget.search!;
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -319,16 +327,20 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                               Expanded(
                                 flex: 2,
-                                child: Container(
-                                  height: 55.h,
-                                  width: 65.w,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.r),
-                                      color: Colors.white),
-                                  child: Icon(
-                                    Icons.search,
-                                    size: 30.sp,
-                                    color: Colors.grey,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    height: 55.h,
+                                    width: 65.w,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
+                                        color: Colors.white),
+                                    child: Icon(
+                                      Icons.search,
+                                      size: 30.sp,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -355,93 +367,6 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                         ),
                       ),
-                      // Container(
-                      //   height: 80,
-                      //   width: 400,
-                      //   color: Colors.red,
-                      //   child: Padding(
-                      //     padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                      //     child: Row(
-                      //       children: [
-                      //         Flexible(
-                      //           child: TextFormField(
-                      //             controller: _startdatepickercntroller,
-                      //             onTap: () async {
-                      //               DateTime? pickeddate = await showDatePicker(
-                      //                 context: context,
-                      //                 initialDate: DateTime.now(),
-                      //                 firstDate: DateTime.now(),
-                      //                 // .subtract(Duration(days: 30)),
-                      //                 lastDate: DateTime.now()
-                      //                     .add(Duration(days: 360)),
-                      //               );
-                      //               if (pickeddate != null) {
-                      //                 String formate = DateFormat("dd MMM ")
-                      //                     .format(pickeddate);
-                      //                 _startdatepickercntroller.text =
-                      //                     formate.toString();
-                      //               } else {
-                      //                 print("Not selected");
-                      //               }
-                      //               _showstartDatePicker();
-                      //               if (_dateTime != null) {
-                      //                 _startdatepickercntroller.text ==
-                      //                     getFormattedDate(_dateTime!, "dd MM");
-                      //               } else {
-                      //                 print("Not selected");
-                      //               }
-                      //               _startdatepickercntroller.text ==
-                      //                   getFormattedDate(_dateTime!, "dd MM");
-                      //             },
-                      //             decoration: InputDecoration(
-                      //                 border: OutlineInputBorder(
-                      //                   borderSide: BorderSide.none,
-                      //                   borderRadius:
-                      //                       BorderRadius.circular(20.r),
-                      //                 ),
-                      //                 prefixIcon: Icon(
-                      //                   Icons.calendar_today_outlined,
-                      //                   color: Colors.grey,
-                      //                 ),
-                      //                 hintText: "Date",
-                      //                 filled: true,
-                      //                 fillColor: Colors.white),
-                      //           ),
-                      //         ),
-                      //         Padding(
-                      //           padding: EdgeInsets.only(left: 8.0),
-                      //           child: Container(
-                      //             height: 55.h,
-                      //             width: 65.w,
-                      //             decoration: BoxDecoration(
-                      //                 borderRadius: BorderRadius.circular(15.r),
-                      //                 color: Colors.white),
-                      //             child: Icon(
-                      //               Icons.search,
-                      //               size: 30.sp,
-                      //               color: Colors.grey,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         Padding(
-                      //           padding: EdgeInsets.only(left: 8.0),
-                      //           child: Container(
-                      //             height: 55.h,
-                      //             width: 65.w,
-                      //             decoration: BoxDecoration(
-                      //                 borderRadius: BorderRadius.circular(15.r),
-                      //                 color: Colors.white),
-                      //             child: Icon(
-                      //               Icons.filter_list,
-                      //               size: 30.sp,
-                      //               color: Colors.grey,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         width: 400,
                         margin: EdgeInsets.all(5),
@@ -802,7 +727,16 @@ class _SearchPageState extends State<SearchPage> {
                                                       .restaurantsWithMenusAndRating![
                                                           index]
                                                       .id;
-
+                                                  var lat = resturantProvider
+                                                      .resturantModel!
+                                                      .restaurantsWithMenusAndRating![
+                                                          index]
+                                                      .latitude;
+                                                  var lon = resturantProvider
+                                                      .resturantModel!
+                                                      .restaurantsWithMenusAndRating![
+                                                          index]
+                                                      .longitude;
                                                   if (data.location!
                                                       .toLowerCase()
                                                       .contains(
@@ -822,7 +756,9 @@ class _SearchPageState extends State<SearchPage> {
                                                               arguments: [
                                                                 data,
                                                                 name,
-                                                                id
+                                                                id,
+                                                                lat,
+                                                                lon
                                                               ]);
                                                         },
                                                         child: Container(

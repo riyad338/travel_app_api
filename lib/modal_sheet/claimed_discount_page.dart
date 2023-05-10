@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:travel_app/custom_widget/contact_for_booking.dart';
-import 'package:travel_app/custom_widget/successfully_claimed_discount.dart';
+import 'package:travel_app/modal_sheet/contact_for_booking.dart';
+import 'package:travel_app/modal_sheet/successfully_claimed_discount.dart';
 import 'package:travel_app/screens/location_permission.dart';
 
 class ClaimedDiscountPage extends StatefulWidget {

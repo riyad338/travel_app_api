@@ -10,12 +10,15 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travel_app/CustomHttp/customhttp.dart';
+import 'package:travel_app/custom_widget/hotel_data.dart';
+import 'package:travel_app/custom_widget/resturant_data.dart';
 import 'package:travel_app/models/latest_campaign.dart';
 import 'package:travel_app/models/popular_deals.dart';
 import 'package:travel_app/models/user_model.dart';
 import 'package:travel_app/providers/home-page_provider.dart';
 import 'package:travel_app/providers/latest_camp.dart';
 import 'package:travel_app/screens/login_page.dart';
+import 'package:travel_app/screens/popular_details.dart';
 import 'package:travel_app/screens/search_page.dart';
 import 'package:travel_app/utils/constance.dart';
 
@@ -217,7 +220,14 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0.w),
                                 child: InkWell(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    SharedPreferences sharedPreferences =
+                                        await SharedPreferences.getInstance();
+                                    sharedPreferences.remove("token");
+                                    Navigator.pushReplacementNamed(
+                                        context, LoginPage.routeName);
+                                    showInToast("Logout SuccessFully");
+                                  },
                                   child: Container(
                                     height: 55.h,
                                     width: 70.w,
@@ -253,35 +263,46 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                "images/hotel.png",
-                                height: 65.h,
-                                width: 80.w,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "Hotel/Resort",
-                                style: mytextstyle(
-                                    Color(0xff9C9C9C), 13.sp, FontWeight.w400),
-                              )
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, HotelData.routeName);
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  "images/hotel.png",
+                                  height: 65.h,
+                                  width: 80.w,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "Hotel/Resort",
+                                  style: mytextstyle(Color(0xff9C9C9C), 13.sp,
+                                      FontWeight.w400),
+                                )
+                              ],
+                            ),
                           ),
-                          Column(
-                            children: [
-                              Image.asset("images/res.png"),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "Restaurant",
-                                style: mytextstyle(
-                                    Color(0xff9C9C9C), 13.sp, FontWeight.w400),
-                              )
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, ResturantData.routeName);
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset("images/res.png"),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "Restaurant",
+                                  style: mytextstyle(Color(0xff9C9C9C), 13.sp,
+                                      FontWeight.w400),
+                                )
+                              ],
+                            ),
                           ),
                           Column(
                             children: [
@@ -458,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                         height: 8.h,
                       ),
                       Container(
-                        height: 150.h,
+                        height: 169.h,
                         width: double.infinity,
                         child: FutureBuilder<PopularDealsModel>(
                             future: homePageProvider.popularDeal(),
@@ -490,231 +511,255 @@ class _HomePageState extends State<HomePage> {
                                       var data = homePageProvider
                                           .popularDealsModel!
                                           .popularDeals![index];
+                                      var name = data.name;
+                                      var id = data.id;
+                                      var lat = data.latitude;
+                                      var lon = data.longitude;
                                       //    snapshot.data!.popularDeals![index];
                                       return Padding(
                                         padding: EdgeInsets.only(
                                           right: 10.0.w,
                                           bottom: 10.h,
                                         ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white70,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          height: 150.h,
-                                          width: 400.w,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                height: double.infinity,
-                                                width: 100.w,
-                                                child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      "https://ddtravels.safafirm.com/${data.photo}",
-                                                  width: double.infinity,
-                                                  height: 250.h,
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (context, url) =>
-                                                      SpinKitFadingCircle(
-                                                    color: Colors.greenAccent,
-                                                  ),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(
-                                                    "images/hote.jpg",
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.pushNamed(context,
+                                                PopularDetails.routeName,
+                                                arguments: [
+                                                  data,
+                                                  name,
+                                                  id,
+                                                  lat,
+                                                  lon
+                                                ]);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.white70,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            height: 150.h,
+                                            width: 400.w,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  height: double.infinity,
+                                                  width: 100.w,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        "https://ddtravels.safafirm.com/${data.photo}",
+                                                    width: double.infinity,
+                                                    height: 250.h,
                                                     fit: BoxFit.cover,
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            SpinKitFadingCircle(
+                                                      color: Colors.greenAccent,
+                                                    ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "images/hote.jpg",
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                ),
 
-                                                // NetworkImage(
-                                                //     "https://ddtravels.safafirm.com/${data.photo}"),
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 8),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                  // NetworkImage(
+                                                  //     "https://ddtravels.safafirm.com/${data.photo}"),
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 8),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "${data.name}",
+                                                            style: TextStyle(
+                                                                fontSize: 18.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                size: 14.sp,
+                                                              ),
+                                                              Text(
+                                                                "${data.location}",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        13.sp,
+                                                                    color: Color(
+                                                                        0xff9C9C9C)),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                  height: 20.h,
+                                                                  width: 40.w,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              15),
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300),
+                                                                  child: Center(
+                                                                      child: Text(
+                                                                          "Hotel",
+                                                                          style: mytextstyle(
+                                                                              Color(0xff9C9C9C),
+                                                                              13.sp,
+                                                                              FontWeight.w400)))),
+                                                              SizedBox(
+                                                                width: 4.w,
+                                                              ),
+                                                              Container(
+                                                                  height: 20.h,
+                                                                  width: 80.w,
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              15),
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300),
+                                                                  child: Center(
+                                                                      child: Text(
+                                                                          "Restaurent",
+                                                                          style: mytextstyle(
+                                                                              Color(0xff9C9C9C),
+                                                                              13.sp,
+                                                                              FontWeight.w400)))),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Column(
                                                       children: [
-                                                        Text(
-                                                          "${data.name}",
-                                                          style: TextStyle(
-                                                              fontSize: 18.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
                                                         Row(
                                                           children: [
                                                             Icon(
-                                                              Icons.location_on,
-                                                              size: 14.sp,
+                                                              Icons.star,
+                                                              color: Color(
+                                                                  0xffF4B806),
                                                             ),
-                                                            Text(
-                                                              "${data.location}",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      13.sp,
-                                                                  color: Color(
-                                                                      0xff9C9C9C)),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color: Color(
+                                                                  0xffF4B806),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color: Color(
+                                                                  0xffF4B806),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color: Color(
+                                                                  0xffF4B806),
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              color: Color(
+                                                                  0xffF4B806),
                                                             ),
                                                           ],
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                                height: 20.h,
-                                                                width: 40.w,
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            15),
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300),
-                                                                child: Center(
-                                                                    child: Text(
-                                                                        "Hotel",
-                                                                        style: mytextstyle(
-                                                                            Color(0xff9C9C9C),
-                                                                            13.sp,
-                                                                            FontWeight.w400)))),
-                                                            SizedBox(
-                                                              width: 4.w,
-                                                            ),
-                                                            Container(
-                                                                height: 20.h,
-                                                                width: 80.w,
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            15),
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300),
-                                                                child: Center(
-                                                                    child: Text(
-                                                                        "Restaurent",
-                                                                        style: mytextstyle(
-                                                                            Color(0xff9C9C9C),
-                                                                            13.sp,
-                                                                            FontWeight.w400)))),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xffF4B806),
-                                                          ),
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xffF4B806),
-                                                          ),
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xffF4B806),
-                                                          ),
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xffF4B806),
-                                                          ),
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Color(
-                                                                0xffF4B806),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Text(
-                                                        "Review",
-                                                        style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 11.sp),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: AssetImage(
-                                                            "images/offershap.png"),
-                                                        fit: BoxFit.fitHeight,
-                                                      ),
-                                                    ),
-                                                    height: 40.h,
-                                                    width: 40.w,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "${data.discount}%",
-                                                        style: TextStyle(
-                                                            fontSize: 13.sp,
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Text("available offer",
+                                                        Text(
+                                                          "Review",
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.grey,
-                                                              fontSize: 10.sp)),
-                                                      Text(
-                                                        "${data.offerPrice}\$",
-                                                        style: mytextstyle(
-                                                          Color(0xff08BA64),
-                                                          15.sp,
-                                                          FontWeight.w700,
+                                                              fontSize: 11.sp),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(
+                                                              "images/offershap.png"),
+                                                          fit: BoxFit.fitHeight,
                                                         ),
                                                       ),
-                                                      Text(
-                                                        " ${data.price}\$",
-                                                        style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          color:
-                                                              Color(0xff08BA64),
-                                                          fontSize: 13.sp,
-                                                          fontWeight:
-                                                              FontWeight.w300,
+                                                      height: 40.h,
+                                                      width: 40.w,
+                                                      child: Center(
+                                                        child: Text(
+                                                          "${data.discount}%",
+                                                          style: TextStyle(
+                                                              fontSize: 13.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color:
+                                                                  Colors.white),
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                                                      ),
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        Text("available offer",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize:
+                                                                    10.sp)),
+                                                        Text(
+                                                          "${data.offerPrice}\$",
+                                                          style: mytextstyle(
+                                                            Color(0xff08BA64),
+                                                            15.sp,
+                                                            FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          " ${data.price}\$",
+                                                          style: TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough,
+                                                            color: Color(
+                                                                0xff08BA64),
+                                                            fontSize: 13.sp,
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );
